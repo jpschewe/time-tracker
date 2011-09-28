@@ -46,22 +46,22 @@ Classes
 =======
 
 * Job
-** name
-** job number
-** notes
-** category - string
-** subjobs - Job
+  * name
+  * job number
+  * notes
+  * category - string
+  * subjobs - Job
 
 * Time Interval
-** Date - mm/dd/yyyy
-** start - hh:mm
-** stop - hh:mm
-** job number
-** WAH - boolean
+  * Date - mm/dd/yyyy
+  * start - hh:mm
+  * stop - hh:mm
+  * job number
+  * WAH - boolean
 
 Globals
 -------
 
 * all jobs - map of job number -> Job
 * all categories - editable list of valid categories
-** Cannot delete a category that has jobs associated with it
+  * Cannot delete a category that has jobs associated with it

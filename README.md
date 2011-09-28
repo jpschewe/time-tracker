@@ -19,6 +19,11 @@ Requirements
 * Be able to view time for any day
 * Keep track of most recently used numbers and optionally sort by this
 * Edit previous time periods
+* Delete all time before Date X
+
+Future
+------
+* allow descriptors to be edited?
 
 
 Design ideas
@@ -26,4 +31,37 @@ Design ideas
 
 * Write in HTML5 and use javascript localstorage object so that it runs offline
 * optionally have it connect to a server database for more storage
+* Use JSON objects as strings in the local store
 
+
+Tasks
+=====
+
+* Test local storage on mobile device
+* Create initial view
+* Define JSON classe(s)
+
+
+Classes
+=======
+
+* Job
+** name
+** job number
+** notes
+** category - string
+** subjobs - Job
+
+* Time Interval
+** Date - mm/dd/yyyy
+** start - hh:mm
+** stop - hh:mm
+** job number
+** WAH - boolean
+
+Globals
+-------
+
+* all jobs - map of job number -> Job
+* all categories - editable list of valid categories
+** Cannot delete a category that has jobs associated with it

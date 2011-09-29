@@ -37,7 +37,8 @@ Design ideas
 Tasks
 =====
 
-* Test local storage on mobile device
+! Test local storage on mobile device
+  * Created http://mtu.net/~jpschewe/temp/local.html and it works
 * Create initial view
 * Define JSON classe(s)
 

@@ -39,6 +39,8 @@ Tasks
 
 ! Test local storage on mobile device
   * Created http://mtu.net/~jpschewe/temp/local.html and it works
+  * Created example application and was able to note when someone has
+    returned to the page and it works on IOS
 * Create initial view
 * Define JSON classe(s)
 

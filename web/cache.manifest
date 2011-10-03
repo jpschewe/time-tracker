@@ -2,8 +2,8 @@ CACHE MANIFEST
 index.html
 style.css
 
+time-tracker.js
+
 extlib/jquery-1.6.4.min.js
 extlib/jquery.json-2.3.min.js
 extlib/jstorage.js
-
-test.js

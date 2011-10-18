@@ -48,11 +48,14 @@ Tasks
 Classes
 =======
 
+* Category
+  * name
+  
 * Job
   * name
-  * job number
-  * notes
-  * category - string
+  * job number - string
+  * notes - string
+  * Category
   * subjobs - Job
 
 * Time Interval

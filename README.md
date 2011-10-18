@@ -48,26 +48,29 @@ Tasks
 Classes
 =======
 
-* Category
-  * name
+* Category - Billable, Unbillable, IR&D
+  * category-id - int
+  * name - string
   
 * Job
-  * name
+  * job-id - int
+  * name - string
   * job number - string
   * notes - string
-  * Category
-  * subjobs - Job
+  * Category - category-id
+  * subjobs - list<job-id>
 
 * Time Interval
   * Date - mm/dd/yyyy
   * start - hh:mm
   * stop - hh:mm
-  * job number
+  * job - job-id
   * WAH - boolean
 
 Globals
 -------
 
-* all jobs - map of job number -> Job
-* all categories - editable list of valid categories
+* all jobs - job-id -> Job
+* all categories - category-id -> Category
+  * editable list of valid categories
   * Cannot delete a category that has jobs associated with it

@@ -1,4 +1,20 @@
+
+
 var STORAGE_PREFIX = "time-tracker.";
+
+// TODO load objects from storage
+// TODO save objects to storage on ??
+var _categories = {};
+
+function Category(name) {
+	var category_id;
+	// find the next available id
+	for (category_id = 0; category_id < Number.MAX_VALUE && _categories[category_id]; category_id = category_id + 1);
+
+	this.name = name;
+	this.cat_id = category_id;
+	_categories[this.cat_id] = this;
+}
 
 function record_visit() {
 	$.jStorage.set(STORAGE_PREFIX + "visit", true);

@@ -6,14 +6,35 @@
 <title></title>
 <link rel='stylesheet' type='text/css' href='style.css' />
 
-<script language='javascript' src="extlib/jquery-1.6.4.min.js"></script>
-<script language='javascript' src="extlib/jquery.json-2.3.min.js"></script>
-<script language='javascript' src="extlib/jstorage.js"></script>
+<script src="extlib/jquery-1.6.4.min.js"></script>
+<script src="extlib/jquery.json-2.3.min.js"></script>
+<script src="extlib/jstorage.js"></script>
 
-<script language='javascript' src="time-tracker.js"></script>
+<script src="time-tracker.js"></script>
 
 <script>
-	
+	$(document).ready(
+			function() {
+				$("#add_category").click(
+						function() {
+							var category_name = $("#category_name").val();
+							if (category_name) {
+								//alert("Category name: " + category_name);
+								var new_category = new Category(category_name);
+
+								jQuery.each(_categories, function(i, val) {
+								      alert("id: " + i + " category name: " + val.name);
+								    });
+								
+								//TODO check for duplicate names
+								alert("Just added category: "
+										+ new_category.name + " with id: "
+										+ new_category.cat_id);
+							} else {
+								alert("No name");
+							}
+						});
+			});
 </script>
 
 </head>
@@ -24,15 +45,13 @@
 	<table>
 		<tbody>
 			<tr>
-				<td><label for='category-name'>Name:</label>
-				</td>
+				<td><label for='category-name'>Name:</label></td>
 				<td><input type='text' id='category_name' name='category_name'
-					value='' />
-				</td>
+					value='' /></td>
 			</tr>
 			<tr>
-				<td><&nbsp;</td>
-				<td><input id='add_category' type='button' value='Add Category' />
+				<td>&nbsp;</td>
+				<td><input type='button' id='add_category' value='Add Category' />
 				</td>
 			</tr>
 		</tbody>

@@ -70,7 +70,7 @@ Classes
 Globals
 -------
 
-* all jobs - job-id -> Job
-* all categories - category-id -> Category
+* g_jobs - job-id -> Job
+* g_categories - category-id -> Category
   * editable list of valid categories
   * Cannot delete a category that has jobs associated with it

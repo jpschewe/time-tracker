@@ -1,15 +1,40 @@
-
-
 var STORAGE_PREFIX = "time-tracker.";
 
-// TODO load objects from storage
-// TODO save objects to storage on ??
+// TODO load objects from storage on page load for all pages
+// TODO save objects to storage on change??
 var _categories = {};
 
+/**
+ * Save the current state to local storage.
+ */
+function save_to_storage() {
+	$.jStorage.set(STORAGE_PREFIX + "_categories", _categories);
+}
+
+/**
+ * Load the current state from local storage.
+ */
+function load_from_storage() {
+	var value = $.jStorage.get(STORAGE_PREFIX + "_categories");
+	if (value) {
+		_categories = value;
+	}
+}
+
+/**
+ * Constructor for a category. Finds the first free ID and assigns it to this
+ * new category.
+ */
 function Category(name) {
 	var category_id;
 	// find the next available id
-	for (category_id = 0; category_id < Number.MAX_VALUE && _categories[category_id]; category_id = category_id + 1);
+	for (category_id = 0; category_id < Number.MAX_VALUE
+			&& _categories[category_id]; category_id = category_id + 1)
+		;
+
+	if (category_id == Number.MAX_VALUE || category_id + 1 == Number.MAX_VALUE) {
+		throw "No free category IDs";
+	}
 
 	this.name = name;
 	this.cat_id = category_id;

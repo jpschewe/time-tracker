@@ -24,26 +24,16 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 <script src="time-tracker.js"></script>
 
 <script>
-	$(document).ready(
-			function() {
-				$("#add_category").click(
-						function() {
-							var category_name = $("#category_name").val();
-							if (category_name) {
-								if(check_duplicate_category(category_name)) {
-									alert("There already exists a category with the name '" + category_name + "'");
-								} else {
-								var new_category = new Category(category_name);
-
-								alert("Just added category: "
-										+ new_category.name + " with id: "
-										+ new_category.cat_id);
-							}
-							} else {
-								alert("No name");
-							}
-						});
-			});
+	$(document).ready(function() {
+		$("#add_category").submit(function() {
+			var category_name = $("#category_name").val();
+			if (category_name) {
+				$.timeTracker.addCategory(category_name);
+			} else {
+				alert("No name");
+			}
+		});
+	});
 </script>
 
 </head>
@@ -51,22 +41,21 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 	<h1>Add a category</h1>
 
-	<table>
-		<tbody>
-			<tr>
-				<td><label for='category-name'>Name:</label>
-				</td>
-				<td><input type='text' id='category_name' name='category_name'
-					value='' />
-				</td>
-			</tr>
-			<tr>
-				<td>&nbsp;</td>
-				<td><input type='button' id='add_category' value='Add Category' />
-				</td>
-			</tr>
-		</tbody>
-	</table>
+	<form id='add_category'>
+		<table>
+			<tbody>
+				<tr>
+					<td><label for='category-name'>Name:</label></td>
+					<td><input type='text' id='category_name' name='category_name'
+						value='' /></td>
+				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td><input type='submit' value='Add Category' /></td>
+				</tr>
+			</tbody>
+		</table>
+	</form>
 
 </body>
 </html>

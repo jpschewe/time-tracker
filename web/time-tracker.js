@@ -1,7 +1,6 @@
 var STORAGE_PREFIX = "time-tracker.";
 
 // TODO load objects from storage on page load for all pages
-// TODO save objects to storage on change??
 var _categories = {};
 
 /**
@@ -38,7 +37,30 @@ function Category(name) {
 
 	this.name = name;
 	this.cat_id = category_id;
+	/* FIXME - check how to add methods to "class"
+	Category.prototype.set_name = function(new_name) {
+		if(check_duplicate_category(new_name)) {
+			alert("There already exists a category with the name '" + new_name + "'");
+		} else {
+			this.name = new_name;
+		}
+	};
+	*/
 	_categories[this.cat_id] = this;
+	save_to_storage();
+}
+
+/**
+ * @return true if a category with the specified name exists 
+ */
+function check_duplicate_category(name) {
+	var duplicate = false;
+	jQuery.each(_categories, function(i, val) {
+		if (val.name == name) {
+			duplicate = true;
+		}
+	});
+	return duplicate;
 }
 
 function record_visit() {

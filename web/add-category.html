@@ -19,17 +19,15 @@
 						function() {
 							var category_name = $("#category_name").val();
 							if (category_name) {
-								//alert("Category name: " + category_name);
+								if(check_duplicate_category(category_name)) {
+									alert("There already exists a category with the name '" + category_name + "'");
+								} else {
 								var new_category = new Category(category_name);
 
-								jQuery.each(_categories, function(i, val) {
-								      alert("id: " + i + " category name: " + val.name);
-								    });
-								
-								//TODO check for duplicate names
 								alert("Just added category: "
 										+ new_category.name + " with id: "
 										+ new_category.cat_id);
+							}
 							} else {
 								alert("No name");
 							}
@@ -45,9 +43,11 @@
 	<table>
 		<tbody>
 			<tr>
-				<td><label for='category-name'>Name:</label></td>
+				<td><label for='category-name'>Name:</label>
+				</td>
 				<td><input type='text' id='category_name' name='category_name'
-					value='' /></td>
+					value='' />
+				</td>
 			</tr>
 			<tr>
 				<td>&nbsp;</td>

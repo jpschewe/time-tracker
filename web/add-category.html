@@ -14,12 +14,17 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 <html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
 <head>
 <meta http-equiv='Content-Type' content='text/html; charset=us-ascii' />
-<title></title>
+<title>Add Category</title>
+<link rel="stylesheet"
+	href="extlib/jquery.mobile-1.0rc2/jquery.mobile-1.0rc2.min.css" />
+
 <link rel='stylesheet' type='text/css' href='style.css' />
 
 <script src="extlib/jquery-1.6.4.min.js"></script>
 <script src="extlib/jquery.json-2.3.min.js"></script>
 <script src="extlib/jstorage.js"></script>
+<script type="text/javascript"
+	src="extlib/jquery.mobile-1.0rc2/jquery.mobile-1.0rc2.min.js"></script>
 
 <script src="time-tracker.js"></script>
 
@@ -39,23 +44,30 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 </head>
 <body>
 
-	<h1>Add a category</h1>
 
-	<form id='add_category'>
-		<table>
-			<tbody>
-				<tr>
-					<td><label for='category-name'>Name:</label></td>
-					<td><input type='text' id='category_name' name='category_name'
-						value='' /></td>
-				</tr>
-				<tr>
-					<td>&nbsp;</td>
-					<td><input type='submit' value='Add Category' /></td>
-				</tr>
-			</tbody>
-		</table>
-	</form>
+	<div data-role='page'>
+
+		<div data-role='header'>
+			<h1>Add a category</h1>
+		</div>
+
+		<div data-role='content'>
+			<form id='add_category'>
+				<table>
+					<tbody>
+						<tr>
+							<td><label for='category-name'>Name:</label></td>
+							<td><input type='text' id='category_name'
+								name='category_name' value='' /></td>
+							<td><input type='submit' value='Add Category' /></td>
+						</tr>
+					</tbody>
+				</table>
+			</form>
+		</div>
+		<!--  end content data-role -->
+	</div>
+	<!-- end page data-role -->
 
 </body>
 </html>

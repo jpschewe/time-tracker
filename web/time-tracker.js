@@ -114,6 +114,13 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 						+ " with id: " + new_category.cat_id);
 				return new_category;
 			}
+		},
+		
+		displayCategories: function() {
+			jQuery.each(_categories, function(i, val) {
+				//TODO make this write html elements to id category_list
+				document.write("<li>" + val.name + "</li>");
+			});
 		}
 
 	};

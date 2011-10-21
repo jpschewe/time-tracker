@@ -16,7 +16,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 <meta http-equiv='Content-Type' content='text/html; charset=us-ascii' />
 <title>Add Category</title>
 
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 
 <link rel="stylesheet"
 	href="extlib/jquery.mobile-1.0rc2/jquery.mobile-1.0rc2.min.css" />
@@ -56,16 +56,13 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 		<div data-role='content'>
 			<form id='add_category'>
-				<table>
-					<tbody>
-						<tr>
-							<td><label for='category-name'>Name:</label></td>
-							<td><input type='text' id='category_name'
-								name='category_name' value='' /></td>
-							<td><input type='submit' value='Add Category' /></td>
-						</tr>
-					</tbody>
-				</table>
+				<ul data-role='listview'>
+					<script>
+						$.timeTracker.displayCategories()
+					</script>
+					<li><input type='text' id='category_name' name='category_name'
+						value='' /> <input type='submit' value='Add Category' /></li>
+				</ul>
 			</form>
 		</div>
 		<!--  end content data-role -->

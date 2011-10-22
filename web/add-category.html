@@ -26,14 +26,21 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 <script src="extlib/jquery-1.6.4.min.js"></script>
 <script src="extlib/jquery.json-2.3.min.js"></script>
 <script src="extlib/jstorage.js"></script>
+<script src="time-tracker.js"></script>
 <script type="text/javascript"
 	src="extlib/jquery.mobile-1.0rc2/jquery.mobile-1.0rc2.min.js"></script>
 
-<script src="time-tracker.js"></script>
 
 <script>
 function displayCategories() {
+        // clear the current list
+        // TODO there has got to be a cleaner way to do this.
         var list = document.getElementById("categories");
+        var currentElements = list.getElementsByTagName("li");
+        for(var i=currentElements.length-1; i>=0; --i) {
+                currentElements[i].parentNode.removeChild(currentElements[i]);
+        }
+
 	$.each($.timeTracker.getCategories(), function(index, category) {
                 var li = document.createElement("li");
                 li.innerHTML = category.name;

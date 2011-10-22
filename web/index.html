@@ -15,71 +15,38 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 <head>
 <meta http-equiv='Content-Type' content='text/html; charset=us-ascii' />
 <title>Time Tracker</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<link rel="stylesheet"
+	href="extlib/jquery.mobile-1.0rc2/jquery.mobile-1.0rc2.min.css" />
+
 <link rel='stylesheet' type='text/css' href='style.css' />
 
-<script language='javascript' src="extlib/jquery-1.6.4.min.js"></script>
-<script language='javascript' src="extlib/jquery.json-2.3.min.js"></script>
-<script language='javascript' src="extlib/jstorage.js"></script>
+<script src="extlib/jquery-1.6.4.min.js"></script>
+<script src="extlib/jquery.json-2.3.min.js"></script>
+<script src="extlib/jstorage.js"></script>
+<script type="text/javascript"
+	src="extlib/jquery.mobile-1.0rc2/jquery.mobile-1.0rc2.min.js"></script>
 
-<script language='javascript' src="time-tracker.js"></script>
+<script src="time-tracker.js"></script>
 
 </head>
 <body>
 
+        <div data-role='page'>
+
+        <div data-role='header'>
 	<h1>Basic Time Tracker</h1>
+        </div>
 
-	<script>
-		check_visit()
-	</script>
-	<script>
-		record_visit()
-	</script>
+        <div data-role='content'>
 
-	<h2>Interactive test</h2>
-	<p>Add some values and refresh the page - if your browser supports
-		storing local data, then the values should survive the page refresh.</p>
+        <a href="add-category.html">Add categories</a>
 
-	<p>
-		<a href="javascript:clear_local_storage()">Clear local storage</a>
-	</p>
+        </div> <!-- content -->
 
-	<table cellspacing="0" cellpadding="0" style="width: 100%">
-		<thead>
-			<tr>
-				<td width="120">KEY</td>
-				<td>VALUE</td>
-				<td width="50">&nbsp;</td>
-			</tr>
-		</thead>
-		<tbody id="tulemused"></tbody>
-
-		<tfoot>
-			<tr>
-				<td><input type="text" id="key" name="key" value=""
-					style="width: 110px;" />
-				</td>
-				<td><input type="text" id="val" name="val" value=""
-					style="width: 98%" />
-				</td>
-				<td><a href="javascript:insert_value()">ADD</a>
-				</td>
-			</tr>
-			<tr>
-				<td><input type="text" id="key2" name="key2" value=""
-					style="width: 110px;" />
-				</td>
-
-				<td>Clicking "GET" alerts the value for provided key with the
-					method <em>$.jStorage.get(key)</em>
-				</td>
-				<td><a href="javascript:get_value()">GET</a>
-				</td>
-			</tr>
-		</tfoot>
-	</table>
-	<script>
-		reDraw()
-	</script>
+        </div> <!-- page -->
 
 </body>
 </html>

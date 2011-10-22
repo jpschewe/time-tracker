@@ -53,7 +53,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 	 */
 	function _check_duplicate_category(name) {
 		var duplicate = false;
-		jQuery.each(_categories, function(i, val) {
+		$.each(_categories, function(i, val) {
 			if (val.name == name) {
 				duplicate = true;
 			}
@@ -109,19 +109,21 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 				return null;
 			} else {
 				var new_category = new Category(category_name);
-
-				alert("Just added category: " + new_category.name
-						+ " with id: " + new_category.cat_id);
 				return new_category;
 			}
 		},
 		
-		displayCategories: function() {
+		getCategories: function() {
+                        var categories = [];
 			jQuery.each(_categories, function(i, val) {
-				//TODO make this write html elements to id category_list
-				document.write("<li>" + val.name + "</li>");
+                                categories.push(val);
 			});
-		}
+                        return categories;
+		},
+
+                clear: function() {
+                        _clear_local_storage();
+                }
 
 	};
 

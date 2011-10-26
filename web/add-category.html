@@ -32,22 +32,22 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 
 <script>
-function displayCategories() {
-        // clear the current list
-        // TODO there has got to be a cleaner way to do this.
-        var list = document.getElementById("categories");
-        var currentElements = list.getElementsByTagName("li");
-        for(var i=currentElements.length-1; i>=0; --i) {
-                currentElements[i].parentNode.removeChild(currentElements[i]);
-        }
+	function displayCategories() {
+		// clear the current list
+		// TODO there has got to be a cleaner way to do this.
+		var list = document.getElementById("categories");
+		var currentElements = list.getElementsByTagName("li");
+		for ( var i = currentElements.length - 1; i >= 0; --i) {
+			currentElements[i].parentNode.removeChild(currentElements[i]);
+		}
 
-	$.each($.timeTracker.getCategories(), function(index, category) {
-                var li = document.createElement("li");
-                li.innerHTML = category.name;
-                list.appendChild(li);
-                //alert("Found category " + category.name);
-        });
-}
+		$.each($.timeTracker.getCategories(), function(index, category) {
+			var li = document.createElement("li");
+			li.innerHTML = category.name;
+			list.appendChild(li);
+			//alert("Found category " + category.name);
+		});
+	}
 
 	$(document).ready(function() {
 		$("#add_category").submit(function() {
@@ -58,9 +58,9 @@ function displayCategories() {
 				alert("No name");
 			}
 		});
-                $("#clear").click(function() {
-                        $.timeTracker.clear();
-                }); 
+		$("#clear").click(function() {
+			$.timeTracker.clear();
+		});
 	});
 </script>
 
@@ -76,16 +76,22 @@ function displayCategories() {
 		<div data-role='content'>
 			<form id='add_category'>
 				<ul data-role='listview' id='categories'>
-                                </ul>
+				</ul>
 				<ul data-role='listview'>
-					<input type='text' id='category_name' name='category_name'
-						value='' /> <input type='submit' value='Add Category' />
-                                </ul>
-                                <input type='button' id='clear' value='Clear Storage'/>
+					<li><input type='text' id='category_name' name='category_name'
+						value='' />
+					</li>
+					<li><input type='submit' value='Add Category' />
+					</li>
+					<li><input type='button' id='clear' value='Clear Storage' />
+					</li>
+				</ul>
 			</form>
 		</div>
 		<!--  end content data-role -->
-<script>displayCategories()</script>
+		<script>
+			displayCategories()
+		</script>
 	</div>
 	<!-- end page data-role -->
 

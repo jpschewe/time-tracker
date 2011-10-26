@@ -32,18 +32,21 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 
 <script>
+	var CATEGORY_NAME_CLASS = "tt-category-name";
 	function displayCategories() {
-		// clear the current list
-		// TODO there has got to be a cleaner way to do this.
 		var list = document.getElementById("categories");
 		var currentElements = list.getElementsByTagName("li");
 		for ( var i = currentElements.length - 1; i >= 0; --i) {
-			currentElements[i].parentNode.removeChild(currentElements[i]);
+			var eleClass = currentElements[i].getAttribute("class");
+			if (eleClass && -1 != eleClass.indexOf(CATEGORY_NAME_CLASS)) {
+				currentElements[i].parentNode.removeChild(currentElements[i]);
+			}
 		}
 
 		$.each($.timeTracker.getCategories(), function(index, category) {
 			var li = document.createElement("li");
 			li.innerHTML = category.name;
+			li.setAttribute("class", CATEGORY_NAME_CLASS);
 			list.appendChild(li);
 			//alert("Found category " + category.name);
 		});
@@ -76,13 +79,9 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		<div data-role='content'>
 			<form id='add_category'>
 				<ul data-role='listview' id='categories'>
-				</ul>
-				<ul data-role='listview'>
 					<li><input type='text' id='category_name' name='category_name'
-						value='' />
-					</li>
-					<li><input type='submit' value='Add Category' />
-					</li>
+						value='' /></li>
+					<li><input type='submit' value='Add Category' /></li>
 					<li><input type='button' id='clear' value='Clear Storage' />
 					</li>
 				</ul>

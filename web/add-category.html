@@ -34,20 +34,12 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 <script>
 	var CATEGORY_NAME_CLASS = "tt-category-name";
 	function displayCategories() {
-		var list = document.getElementById("categories");
-		var currentElements = list.getElementsByTagName("li");
-		for ( var i = currentElements.length - 1; i >= 0; --i) {
-			var eleClass = currentElements[i].getAttribute("class");
-			if (eleClass && -1 != eleClass.indexOf(CATEGORY_NAME_CLASS)) {
-				currentElements[i].parentNode.removeChild(currentElements[i]);
-			}
-		}
+		$("." + CATEGORY_NAME_CLASS).remove();
 
 		$.each($.timeTracker.getCategories(), function(index, category) {
-			var li = document.createElement("li");
-			li.innerHTML = category.name;
-			li.setAttribute("class", CATEGORY_NAME_CLASS);
-			list.appendChild(li);
+			var li = $("<li>" + category.name + "</li>");
+			$(li).addClass(CATEGORY_NAME_CLASS);
+			$("#categories").prepend(li);
 			//alert("Found category " + category.name);
 		});
 	}
@@ -63,6 +55,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		});
 		$("#clear").click(function() {
 			$.timeTracker.clear();
+			displayCategories();
 		});
 	});
 </script>

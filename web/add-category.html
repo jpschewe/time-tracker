@@ -14,7 +14,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 <html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
 <head>
 <meta http-equiv='Content-Type' content='text/html; charset=us-ascii' />
-<title>Time Tracker</title>
+<title>Add Category</title>
 
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
@@ -31,22 +31,55 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 	src="extlib/jquery.mobile-1.0rc2/jquery.mobile-1.0rc2.min.js"></script>
 
 
+<script>
+	var CATEGORY_NAME_CLASS = "tt-category-name";
+	function displayCategories() {
+		$("." + CATEGORY_NAME_CLASS).remove();
+
+		$.each($.timeTracker.getCategories(), function(index, category) {
+			var li = $("<li>" + category.name + "</li>");
+			$(li).addClass(CATEGORY_NAME_CLASS);
+			$("#categories").prepend(li);
+			//alert("Found category " + category.name);
+		});
+	}
+
+	$(document).ready(function() {
+		$("#add_category").submit(function() {
+			var category_name = $("#category_name").val();
+			if (category_name) {
+				$.timeTracker.addCategory(category_name);
+			} else {
+				alert("No name");
+			}
+		});
+	});
+</script>
+
 </head>
 <body>
 
-        <div data-role='page'>
+	<div data-role='page'>
 
-        <div data-role='header'>
-	<h1>Basic Time Tracker</h1>
-        </div>
+		<div data-role='header'>
+			<h1>Add a category</h1>
+		</div>
 
-        <div data-role='content'>
-
-        <a href="add-category.html">Add categories</a>
-
-        </div> <!-- content -->
-
-        </div> <!-- page -->
+		<div data-role='content'>
+			<form id='add_category'>
+				<ul data-role='listview' id='categories'>
+					<li><input type='text' id='category_name' name='category_name'
+						value='' /></li>
+					<li><input type='submit' value='Add Category' /></li>
+				</ul>
+			</form>
+		</div>
+		<!--  end content data-role -->
+		<script>
+			displayCategories()
+		</script>
+	</div>
+	<!-- end page data-role -->
 
 </body>
 </html>

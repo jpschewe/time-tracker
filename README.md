@@ -62,3 +62,8 @@ Globals
 * g_categories - category-id -> Category
   * editable list of valid categories
   * Cannot delete a category that has jobs associated with it
+
+TODO
+====
+* Update cache.manifest to contain references to all javascript libraries
+* Use cache.manifest to cache on mobile devices

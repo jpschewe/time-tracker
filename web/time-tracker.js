@@ -235,6 +235,35 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		},
 
 		/**
+		 * Delete a category. Alert on an error
+		 * 
+		 * @param category_id
+		 *            the id of the category to delete
+		 * @returns {Boolean} if the delete succeeded
+		 */
+		deleteCategory : function(category_id) {
+			var can_delete = true;
+			$
+					.each(
+							$.timeTracker.getJobs(),
+							function(index, job) {
+								if (job.cat_id == category_id) {
+									can_delete = false;
+									alert("Job "
+											+ job.name
+											+ " still references this category, cannot delete");
+								}
+							});
+			if (can_delete) {
+				delete _categories[category_id];
+				return true;
+			} else {
+				return false;
+			}
+
+		},
+
+		/**
 		 * Create a new job.
 		 * 
 		 * @param job_name
@@ -283,6 +312,19 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 				} else {
 					return 1;
 				}
+			});
+			return jobs;
+		},
+
+		/**
+		 * Get all known jobs
+		 * 
+		 * @returns {Array}
+		 */
+		getJobs : function() {
+			var jobs = [];
+			$.each(_jobs, function(i, val) {
+				jobs.push(val);
 			});
 			return jobs;
 		},
@@ -409,8 +451,8 @@ $(document)
 												category, category_name);
 									});
 					$("#edit-category_delete").click(function() {
-						// FIXME implement
-						alert("Haven't implemented delete on category yet");
+						var category_id = $("#settings_category").val();
+						return $.timeTracker.deleteCategory(category_id);
 					});
 
 					$("#add-job_add").click(

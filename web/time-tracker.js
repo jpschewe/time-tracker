@@ -115,10 +115,24 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 			}
 		},
 
+		/**
+		 * Get the categories known to the system.
+		 * 
+		 * @returns {Array} sorted by name
+		 */
 		getCategories : function() {
 			var categories = [];
 			jQuery.each(_categories, function(i, val) {
 				categories.push(val);
+			});
+			categories.sort(function(a, b) {
+				if (a.name == b.name) {
+					return 0;
+				} else if (a.name < b.name) {
+					return -1;
+				} else {
+					return 1;
+				}
 			});
 			return categories;
 		},
@@ -174,15 +188,16 @@ $(document)
 							});
 
 					$("#edit-category_commit").click(function() {
-						//FIXME implement
-						// need to get category id from #settings_categories and then change name
+						// FIXME implement
+						// need to get category id from #settings_categories and
+						// then change name
 						alert("Haven't implemented commit on category yet");
 					});
 					$("#edit-category_delete").click(function() {
-						//FIXME implement
+						// FIXME implement
 						alert("Haven't implemented deleteon category yet");
 					});
-					
+
 					$("#settings_edit-category")
 							.click(
 									function() {
@@ -216,7 +231,7 @@ $(document)
 											+ category.cat_id + '">'
 											+ category.name + '</option>';
 								});
-								//FIXME select box isn't behaving
+								// FIXME select box isn't behaving
 								$("#settings_categories").html(options);
 							});
 

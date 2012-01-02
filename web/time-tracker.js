@@ -256,6 +256,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 							});
 			if (can_delete) {
 				delete _categories[category_id];
+				_save();
 				return true;
 			} else {
 				return false;

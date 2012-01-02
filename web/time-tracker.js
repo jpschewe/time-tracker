@@ -175,6 +175,27 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		},
 
 		/**
+		 * Set the name of a category
+		 * 
+		 * @param category
+		 *            the category
+		 * @param category_name
+		 *            the new name
+		 * @returns if the set was successful
+		 */
+		setCategoryName : function(category, category_name) {
+			if (_check_duplicate_category(category_name)) {
+				alert("There already exists a category with the name '"
+						+ category_name + "'");
+				return false;
+			} else {
+				category.name = category_name;
+				_save();
+				return true;
+			}
+		},
+
+		/**
 		 * Get the categories known to the system.
 		 * 
 		 * @returns {Array} sorted by name
@@ -366,12 +387,27 @@ $(document)
 								}
 							});
 
-					$("#edit-category_commit").click(function() {
-						// FIXME implement
-						// need to get category id from #settings_category and
-						// then change name
-						alert("Haven't implemented commit on category yet");
-					});
+					$("#edit-category_commit")
+							.click(
+									function() {
+										var category_name = $(
+												"#edit-category_name").val();
+										if (!category_name) {
+											alert("No name");
+											return false;
+										}
+										var category_id = $(
+												"#settings_category").val();
+										var category = $.timeTracker
+												.getCategoryById(category_id);
+										if (null == category) {
+											alert("Internal error, no category with id: "
+													+ category_id);
+											return false;
+										}
+										return $.timeTracker.setCategoryName(
+												category, category_name);
+									});
 					$("#edit-category_delete").click(function() {
 						// FIXME implement
 						alert("Haven't implemented delete on category yet");

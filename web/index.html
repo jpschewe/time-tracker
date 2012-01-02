@@ -39,16 +39,16 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 			<!--  FIXME make changeable via javascript -->
 			<!--  FIXME make full width -->
 			<h1>
-				<a href='#' data-role='button' id='main.active-job'>Active Job</a>
+				<a href='#' data-role='button' id='main_active-job'>Active Job</a>
 			</h1>
 		</div>
 
 		<div data-role='content'>
 			<!-- FIXME make page to add a job -->
-			<a href='#add-job' id='main.add-job' data-role='button'>Add Job</a>
+			<a href='#add-job' id='main_add-job' data-role='button'>Add Job</a>
 
 			<!-- FIXME populate this list -->
-			<div id='main.joblist'></div>
+			<div id='main_joblist'></div>
 		</div>
 
 		<div data-role='footer'>
@@ -61,35 +61,37 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		<div data-role='header'>Settings</div>
 		<div data-role='content'>
 			<!-- FIXME set state so that we know it's a new category -->
-			<a href="#category" id='settings.add-category'>Add categories</a>
+			<a href="#category" id='settings_add-category'>Add categories</a>
 		</div>
 		<div data-role='footer'>
-			<a href='#main' id='settings.done'>Done</a>
+			<a href='#main' id='settings_done'>Done</a>
 		</div>
 	</div>
 	<!--  end settings -->
 
 	<div data-role='page' id='category'>
 		<!-- FIXME switch add/edit text depending on the state -->
-		<div data-role='header'>Add/Edit Category</div>
+		<div data-role='header'>
+			<span id='category_header-text'>Add/Edit</span> Category
+		</div>
 		<div data-role='content'>
 			<!--  FIXME get the current category name in the input field -->
-			<form id='category.add_category'>
+			<form id='category_add_category'>
 				<p>
-					<label for='category.name'>Name:</label> <input type='text'
-						id='category.name' name='category.name' value='' />
+					<label for='category_name'>Name:</label> <input type='text'
+						id='category_name' name='category_name' value='' />
 				</p>
 			</form>
 
 		</div>
 		<div data-role='footer'>
 			<div data-role='controlgroup' data-type='horizontal'>
-				<a href='#settings' data-role='button' id='category.commit'>Commit</a>
+				<a href='#settings' data-role='button' id='category_commit'>Commit</a>
 
-				<a href='#settings' data-role='button' id='category.cancel'>Cancel</a>
+				<a href='#settings' data-role='button' id='category_cancel'>Cancel</a>
 
 				<a href='#settings' id='category-delete' data-role='button'
-					id='category.delete'>Delete</a>
+					id='category_delete'>Delete</a>
 			</div>
 		</div>
 	</div>

@@ -11,10 +11,6 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 // disable ajax loading in jquery mobile. Maybe enable this again later
 // once I understand it better
-$(document).bind("mobileinit", function() {
-        $.mobile.ajaxEnabled = false;
-});
-
 (function($) {
 	if (!$) {
 		throw new Error("jQuery needs to be loaded before time-tracker!");
@@ -118,21 +114,27 @@ $(document).bind("mobileinit", function() {
 				return new_category;
 			}
 		},
-		
-		getCategories: function() {
-                        var categories = [];
+
+		getCategories : function() {
+			var categories = [];
 			jQuery.each(_categories, function(i, val) {
-                                categories.push(val);
+				categories.push(val);
 			});
-                        return categories;
+			return categories;
 		},
 
-                clear: function() {
-                        _clear_local_storage();
-                }
+		clear : function() {
+			_clear_local_storage();
+		}
 
 	};
 
 	_load();
 
 })(window.jQuery || window.$);
+
+$(document).ready(function() {
+	$("#settings_add-category").click(function() {
+		$("#category_header-text").html('Add');
+	});
+});

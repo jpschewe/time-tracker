@@ -62,8 +62,16 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 			<h1>Settings</h1>
 		</div>
 		<div data-role='content'>
-			<!-- FIXME set state so that we know it's a new category -->
-			<a href="#add-category" id='settings_add-category'>Add categories</a>
+			<!--  FIXME how to get select and edit on the same row -->
+			<fieldset>
+				<select id='settings_categories'>
+
+				</select> <a href='#edit-category' id='settings_edit-category'
+					data-role='button'>Edit</a>
+			</fieldset>
+
+			<a href='#add-category' id='settings_add-category' data-role='button'>Add
+				Category</a>
 		</div>
 		<div data-role='footer'>
 			<a href='#main' id='settings_done'>Done</a>
@@ -96,7 +104,6 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 			<h1>Edit Category</h1>
 		</div>
 		<div data-role='content'>
-			<!--  FIXME get the current category name in the input field -->
 			<p>
 				<label for='edit-category_name'>Name:</label> <input type='text'
 					id='edit-category_name' name='edit-category_name' value='' />
@@ -104,10 +111,12 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		</div>
 		<div data-role='footer'>
 			<div data-role='controlgroup' data-type='horizontal'>
+				<!-- FIXME need to get category id from #settings_categories and then change name -->
 				<a href='#settings' data-role='button' id='edit-category_commit'>Commit</a>
 
 				<a href='#settings' data-role='button' id='edit-category_cancel'>Cancel</a>
 
+				<!-- FIXME need to call delete and make sure to cancel if there are jobs with this category -->
 				<a href='#settings' data-role='button' id='edit-category_delete'>Delete</a>
 			</div>
 		</div>

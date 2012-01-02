@@ -24,12 +24,14 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 	// //////////////////////// PRIVATE METHODS ////////////////////////
 
 	var _categories = {};
+	var _jobs = {};
 
 	/**
 	 * Save the current state to local storage.
 	 */
 	function _save() {
 		$.jStorage.set(STORAGE_PREFIX + "_categories", _categories);
+		$.jStorage.set(STORAGE_PREFIX + "_jobs", _jobs);
 	}
 
 	/**
@@ -40,8 +42,15 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		if (value) {
 			_categories = value;
 		}
+		value = $.jStorage.get(STORAGE_PREFIX + "_jobs");
+		if (value) {
+			_jobs = value;
+		}
 	}
 
+	/**
+	 * Clear anything from local storage with a prefix of STORAGE_PREFIX.
+	 */
 	function _clear_local_storage() {
 		$.each($.jStorage.index(), function(index, value) {
 			if (value.substring(0, STORAGE_PREFIX.length) == STORAGE_PREFIX) {
@@ -56,6 +65,19 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 	function _check_duplicate_category(name) {
 		var duplicate = false;
 		$.each(_categories, function(i, val) {
+			if (val.name == name) {
+				duplicate = true;
+			}
+		});
+		return duplicate;
+	}
+
+	/**
+	 * @return true if a job with the specified name exists
+	 */
+	function _check_duplicate_job(name) {
+		var duplicate = false;
+		$.each(_jobs, function(i, val) {
 			if (val.name == name) {
 				duplicate = true;
 			}
@@ -92,6 +114,29 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		_save();
 	}
 
+	/**
+	 * Constructor for a job.. Finds the first free ID and assigns it to this
+	 * new job.
+	 */
+	function Job(name, job_number, category_id, notes) {
+		var job_id;
+		// find the next available id
+		for (job_id = 0; job_id < Number.MAX_VALUE && _jobs[job_id]; job_id = job_id + 1)
+			;
+
+		if (job_id == Number.MAX_VALUE || job_id + 1 == Number.MAX_VALUE) {
+			throw "No free job IDs";
+		}
+
+		this.job_id = job_id;
+		this.name = name;
+		this.job_number = job_number;
+		this.cat_id = category_id;
+		this.notes = notes;
+		_jobs[this.job_id] = this;
+		_save();
+	}
+
 	// //////////////////////// PUBLIC INTERFACE /////////////////////////
 
 	$.timeTracker = {
@@ -102,6 +147,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		 * Create a new category.
 		 * 
 		 * @param category_name
+		 *            the name of the category
 		 * @returns the new category or Null if there is a duplicate
 		 */
 		addCategory : function(category_name) {
@@ -122,7 +168,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		 */
 		getCategories : function() {
 			var categories = [];
-			jQuery.each(_categories, function(i, val) {
+			$.each(_categories, function(i, val) {
 				categories.push(val);
 			});
 			categories.sort(function(a, b) {
@@ -146,12 +192,36 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		 */
 		getCategoryById : function(toFind) {
 			var category = null;
-			jQuery.each(_categories, function(i, val) {
+			$.each(_categories, function(i, val) {
 				if (val.cat_id == toFind) {
 					category = val;
 				}
 			});
 			return category;
+		},
+
+		/**
+		 * Create a new job.
+		 * 
+		 * @param job_name
+		 *            the name of the job
+		 * @param job_number
+		 *            the job number for the job (may be empty)
+		 * @param notes
+		 *            any notes for this job
+		 * @param category_id
+		 *            the id of the category for this job
+		 * @returns the new category or Null if there is a duplicate
+		 */
+		addJob : function(job_name, job_number, category_id, notes) {
+			if (_check_duplicate_job(job_name)) {
+				alert("There already exists a job with the name '" + job_name
+						+ "'");
+				return null;
+			} else {
+				var new_job = new Job(job_name, job_number, category_id, notes);
+				return new_job;
+			}
 		},
 
 		clear : function() {
@@ -195,8 +265,45 @@ $(document)
 					});
 					$("#edit-category_delete").click(function() {
 						// FIXME implement
-						alert("Haven't implemented deleteon category yet");
+						alert("Haven't implemented delete on category yet");
 					});
+
+					$("#add-job_add").click(
+							function() {
+								var job_name = $("#add-job_name").val();
+								if (!job_name) {
+									alert("No name");
+									return false;
+								}
+
+								var job_number = $("#add-job_number").val();
+
+								var category_id = $("#add-job_category").val();
+								if (!category_id) {
+									alert("You must select a category");
+									return false;
+								}
+
+								var notes = $("#add-job_notes").val();
+
+								var job = $.timeTracker.addJob(job_name,
+										job_number, category_id, notes);
+								return job != null;
+
+							});
+					$('#add-job').live(
+							'pageshow',
+							function(event) {
+								var options = '<option></option>';
+								$.each($.timeTracker.getCategories(), function(
+										index, category) {
+									options += '<option value="'
+											+ category.cat_id + '">'
+											+ category.name + '</option>';
+								});
+								// FIXME select box isn't behaving
+								$("#add-job_category").html(options);
+							});
 
 					$("#settings_edit-category")
 							.click(

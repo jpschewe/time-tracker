@@ -44,7 +44,6 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		</div>
 
 		<div data-role='content'>
-			<!-- FIXME make page to add a job -->
 			<a href='#add-job' id='main_add-job' data-role='button'>Add Job</a>
 
 			<!-- FIXME populate this list -->
@@ -106,7 +105,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		<div data-role='content'>
 			<p>
 				<label for='edit-category_name'>Name:</label> <input type='text'
-					id='edit-category_name' name='edit-category_name' value='' />
+					id='edit-category_name' value='' />
 			</p>
 		</div>
 		<div data-role='footer'>
@@ -121,6 +120,39 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 	</div>
 	<!--  end add-category -->
 
+	<div data-role='page' id='add-job'>
+		<div data-role='header'>
+			<h1>Add Job</h1>
+		</div>
+		<div data-role='content'>
+			<p>
+				<label for='add-job_name'>Name:</label> <input type='text'
+					id='add-job_name' value='' />
+
+				<!--  -->
+				<label for='add-job_job-number'>Job Number:</label> <input
+					type='text' id='add-job_job-number' value='' />
+
+				<!--  -->
+				<label for='add-job_category'>Category:</label> <select
+					id='add-job_category'>
+				</select>
+
+				<!--  -->
+				<label for='add-job_notes'>Notes:</label>
+				<textarea id='add-job_notes'></textarea>
+
+			</p>
+
+		</div>
+		<div data-role='footer'>
+			<div data-role='controlgroup' data-type='horizontal'>
+				<a href='#main' data-role='button' id='add-job_add'>Add</a> <a
+					href='#main' data-role='button' id='add-job_cancel'>Cancel</a>
+			</div>
+		</div>
+	</div>
+	<!-- end add-job -->
 
 </body>
 </html>

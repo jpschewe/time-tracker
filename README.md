@@ -67,3 +67,6 @@ TODO
 ====
 * Update cache.manifest to contain references to all javascript libraries
 * Use cache.manifest to cache on mobile devices
+* How to tell browser when to flush cache?
+* Add support for subjobs
+* How to get select box to behave. After adding values via javascript there isno selected value.

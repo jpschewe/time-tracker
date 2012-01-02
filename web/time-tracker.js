@@ -223,6 +223,28 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 				return new_job;
 			}
 		},
+		
+		/**
+		 * Get the jobs known to the system.
+		 * 
+		 * @returns {Array} sorted by name
+		 */
+		getJobs : function() {
+			var jobs = [];
+			$.each(_jobs, function(i, val) {
+				jobs.push(val);
+			});
+			jobs.sort(function(a, b) {
+				if (a.name == b.name) {
+					return 0;
+				} else if (a.name < b.name) {
+					return -1;
+				} else {
+					return 1;
+				}
+			});
+			return jobs;
+		},
 
 		clear : function() {
 			_clear_local_storage();
@@ -349,5 +371,19 @@ $(document)
 											$("#settings_category").html("");
 										}
 									});
+
+					$('#main').live(
+							'pageshow',
+							function(event) {
+								var html = "";
+								//TODO this needs to optionally use the MRU job list
+								//FIXME skip the selected job
+								$.each($.timeTracker.getJobs(), function(
+										index, job) {
+									html += "<li><a id='" + job.job_id + "'>" + job.name + "</a></li>";
+								});
+								$("#main_joblist").html(html);
+								$("#main_joblist").listview("refresh");
+							});
 
 				}); // end ready function

@@ -173,6 +173,16 @@ $(document)
 								}
 							});
 
+					$("#edit-category_commit").click(function() {
+						//FIXME implement
+						// need to get category id from #settings_categories and then change name
+						alert("Haven't implemented commit on category yet");
+					});
+					$("#edit-category_delete").click(function() {
+						//FIXME implement
+						alert("Haven't implemented deleteon category yet");
+					});
+					
 					$("#settings_edit-category")
 							.click(
 									function() {
@@ -206,6 +216,7 @@ $(document)
 											+ category.cat_id + '">'
 											+ category.name + '</option>';
 								});
+								//FIXME select box isn't behaving
 								$("#settings_categories").html(options);
 							});
 

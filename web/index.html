@@ -34,19 +34,67 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 </head>
 <body>
 
-        <div data-role='page'>
+	<div data-role='page' id='main'>
+		<div data-role='header'>
+			<!--  FIXME make changeable via javascript -->
+			<!--  FIXME make full width -->
+			<h1>
+				<a href='#' data-role='button' id='main.active-job'>Active Job</a>
+			</h1>
+		</div>
 
-        <div data-role='header'>
-	<h1>Basic Time Tracker</h1>
-        </div>
+		<div data-role='content'>
+			<!-- FIXME make page to add a job -->
+			<a href='#add-job' id='main.add-job' data-role='button'>Add Job</a>
 
-        <div data-role='content'>
+			<!-- FIXME populate this list -->
+			<div id='main.joblist'></div>
+		</div>
 
-        <a href="add-category.html">Add categories</a>
+		<div data-role='footer'>
+			<a href="#settings" data-role='button' data-icon='gear'>Settings</a>
+		</div>
+	</div>
+	<!-- end home -->
 
-        </div> <!-- content -->
+	<div data-role='page' id='settings'>
+		<div data-role='header'>Settings</div>
+		<div data-role='content'>
+			<!-- FIXME set state so that we know it's a new category -->
+			<a href="#category" id='settings.add-category'>Add categories</a>
+		</div>
+		<div data-role='footer'>
+			<a href='#main' id='settings.done'>Done</a>
+		</div>
+	</div>
+	<!--  end settings -->
 
-        </div> <!-- page -->
+	<div data-role='page' id='category'>
+		<!-- FIXME switch add/edit text depending on the state -->
+		<div data-role='header'>Add/Edit Category</div>
+		<div data-role='content'>
+			<!--  FIXME get the current category name in the input field -->
+			<form id='category.add_category'>
+				<p>
+					<label for='category.name'>Name:</label> <input type='text'
+						id='category.name' name='category.name' value='' />
+				</p>
+			</form>
+
+		</div>
+		<div data-role='footer'>
+			<div data-role='controlgroup' data-type='horizontal'>
+				<a href='#settings' data-role='button' id='category.commit'>Commit</a>
+
+				<a href='#settings' data-role='button' id='category.cancel'>Cancel</a>
+
+				<a href='#settings' id='category-delete' data-role='button'
+					id='category.delete'>Delete</a>
+			</div>
+		</div>
+	</div>
+	<!--  end category -->
+
 
 </body>
 </html>

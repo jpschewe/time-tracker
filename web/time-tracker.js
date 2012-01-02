@@ -259,7 +259,7 @@ $(document)
 
 					$("#edit-category_commit").click(function() {
 						// FIXME implement
-						// need to get category id from #settings_categories and
+						// need to get category id from #settings_category and
 						// then change name
 						alert("Haven't implemented commit on category yet");
 					});
@@ -305,10 +305,24 @@ $(document)
 								$("#add-job_category").html(options);
 							});
 
+					$('#settings').live(
+							'pageshow',
+							function(event) {
+								var options = '<option></option>';
+								$.each($.timeTracker.getCategories(), function(
+										index, category) {
+									options += '<option value="'
+											+ category.cat_id + '">'
+											+ category.name + '</option>';
+								});
+								// FIXME select box isn't behaving
+								$("#settings_category").html(options);
+							});
+
 					$("#settings_edit-category")
 							.click(
 									function() {
-										var catid = $("#settings_categories")
+										var catid = $("#settings_category")
 												.val();
 										if (!catid) {
 											alert("No category selected!");
@@ -326,20 +340,14 @@ $(document)
 											return true;
 										}
 									});
+					$("#settings_clear-data")
+							.click(
+									function() {
+										var answer = confirm("Are you sure you want to clear all data?");
+										if (answer) {
+											$.timeTracker.clear();
+											$("#settings_category").html("");
+										}
+									});
 
-					// initialize data for the settings page as it's loaded
-					$('#settings').live(
-							'pageshow',
-							function(event) {
-								var options = '<option></option>';
-								$.each($.timeTracker.getCategories(), function(
-										index, category) {
-									options += '<option value="'
-											+ category.cat_id + '">'
-											+ category.name + '</option>';
-								});
-								// FIXME select box isn't behaving
-								$("#settings_categories").html(options);
-							});
-
-				});
+				}); // end ready function

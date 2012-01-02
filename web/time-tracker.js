@@ -25,6 +25,9 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 	var _categories = {};
 	var _jobs = {};
+	var _jobs_use_mru = false; // if true, then list jobs by most recently used
+	// FIXME need to track MRU list for jobs
+	var _active_job_id = null; // active job id
 
 	/**
 	 * Save the current state to local storage.
@@ -32,6 +35,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 	function _save() {
 		$.jStorage.set(STORAGE_PREFIX + "_categories", _categories);
 		$.jStorage.set(STORAGE_PREFIX + "_jobs", _jobs);
+		$.jStorage.set(STORAGE_PREFIX + "_jobs_use_mru", _jobs_use_mru);
+		$.jStorage.set(STORAGE_PREFIX + "_active_job_id", _active_job_id);
 	}
 
 	/**
@@ -39,12 +44,20 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 	 */
 	function _load() {
 		var value = $.jStorage.get(STORAGE_PREFIX + "_categories");
-		if (value) {
+		if (null != value) {
 			_categories = value;
 		}
 		value = $.jStorage.get(STORAGE_PREFIX + "_jobs");
-		if (value) {
+		if (null != value) {
 			_jobs = value;
+		}
+		value = $.jStorage.get(STORAGE_PREFIX + "_jobs_use_mru");
+		if (null != value) {
+			_jobs_use_mru = value;
+		}
+		value = $.jStorage.get(STORAGE_PREFIX + "_active_job_id");
+		if (null != value) {
+			_active_job_id = value;
 		}
 	}
 
@@ -223,17 +236,24 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 				return new_job;
 			}
 		},
-		
+
 		/**
-		 * Get the jobs known to the system.
+		 * Get the list of jobs to display on the main screen. This makes sure
+		 * they are sorted correctly and automatically skips the active job.
 		 * 
 		 * @returns {Array} sorted by name
 		 */
-		getJobs : function() {
+		getJobsList : function() {
 			var jobs = [];
 			$.each(_jobs, function(i, val) {
-				jobs.push(val);
+				if (val.job_id != _active_job_id) {
+					jobs.push(val);
+				}
 			});
+			// FIXME need to handle MRU list
+			if (_jobs_use_mru) {
+				alert("Jobs MRU list not yet implemented");
+			}
 			jobs.sort(function(a, b) {
 				if (a.name == b.name) {
 					return 0;
@@ -246,6 +266,74 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 			return jobs;
 		},
 
+		/**
+		 * Get a job by id
+		 * 
+		 * @param toFind
+		 *            the id to find
+		 * @returns the job or null
+		 */
+		getJobById : function(toFind) {
+			var job = null;
+			$.each(_jobs, function(i, val) {
+				if (val.job_id == toFind) {
+					job = val;
+				}
+			});
+			return job;
+		},
+
+		/**
+		 * Set the active job id.
+		 */
+		setActiveJob : function(job_id) {
+			var job = $.timeTracker.getJobById(job_id);
+			if (null == job) {
+				alert("Job with id " + job_id + " cannot be found");
+			}
+			// FIXME need to start and stop clock here
+			$("#main_active-job").text(job.name);
+			_active_job_id = job.job_id;
+			_save();
+			$.timeTracker.refreshJobList();
+		},
+
+		/**
+		 * Get the active job.
+		 * 
+		 * @return the job object or null if no active job
+		 */
+		getActiveJob : function() {
+			if (null == _active_job_id) {
+				return null;
+			} else {
+				return $.timeTracker.getJobById(_active_job_id);
+			}
+		},
+
+		/**
+		 * Update the job list on the main display.
+		 */
+		refreshJobList : function() {
+			// TODO this needs to optionally use the
+			// MRU job list
+			$("#main_joblist").empty();
+			$.each($.timeTracker.getJobsList(), function(index, job) {
+				var element = $("<li><a id='" + job.job_id + "'>" + job.name
+						+ "</a></li>");
+				$(element).click(function() {
+					$.timeTracker.setActiveJob(job.job_id);
+				});
+				$("#main_joblist").append(element);
+			});
+			$("#main_joblist").listview("refresh");
+
+			var active_job = $.timeTracker.getActiveJob();
+			if (null != active_job) {
+				$("#main_active-job").text(active_job.name);
+			}
+		},
+
 		clear : function() {
 			_clear_local_storage();
 		}
@@ -253,7 +341,6 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 	};
 
 	_load();
-
 })(window.jQuery || window.$);
 
 $(document)
@@ -372,18 +459,8 @@ $(document)
 										}
 									});
 
-					$('#main').live(
-							'pageshow',
-							function(event) {
-								var html = "";
-								//TODO this needs to optionally use the MRU job list
-								//FIXME skip the selected job
-								$.each($.timeTracker.getJobs(), function(
-										index, job) {
-									html += "<li><a id='" + job.job_id + "'>" + job.name + "</a></li>";
-								});
-								$("#main_joblist").html(html);
-								$("#main_joblist").listview("refresh");
-							});
+					$('#main').live('pageshow', function(event) {
+						$.timeTracker.refreshJobList();
+					});
 
 				}); // end ready function

@@ -134,7 +134,19 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 })(window.jQuery || window.$);
 
 $(document).ready(function() {
-	$("#settings_add-category").click(function() {
-		$("#category_header-text").html('Add');
+	// Anything in here is only executed when the app starts, not on each page
+	// load
+
+	// setup button handlers
+	$("#add-category_add").click(function() {
+		var category_name = $("#add-category_name").val();
+		if (category_name) {
+			var category = $.timeTracker.addCategory(category_name);
+			return category != null;
+		} else {
+			alert("No name");
+			return false;
+		}
 	});
+
 });

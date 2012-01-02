@@ -34,19 +34,95 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 </head>
 <body>
 
-        <div data-role='page'>
+	<div data-role='page' id='main'>
+		<div data-role='header'>
+			<!--  FIXME make changeable via javascript -->
+			<!--  FIXME make full width -->
+			<h1>
+				<a href='#' data-role='button' id='main_active-job'>Active Job</a>
+			</h1>
+		</div>
 
-        <div data-role='header'>
-	<h1>Basic Time Tracker</h1>
-        </div>
+		<div data-role='content'>
+			<!-- FIXME make page to add a job -->
+			<a href='#add-job' id='main_add-job' data-role='button'>Add Job</a>
 
-        <div data-role='content'>
+			<!-- FIXME populate this list -->
+			<div id='main_joblist'></div>
+		</div>
 
-        <a href="add-category.html">Add categories</a>
+		<div data-role='footer'>
+			<a href="#settings" data-role='button' data-icon='gear'>Settings</a>
+		</div>
+	</div>
+	<!-- end home -->
 
-        </div> <!-- content -->
+	<div data-role='page' id='settings'>
+		<div data-role='header'>
+			<h1>Settings</h1>
+		</div>
+		<div data-role='content'>
+			<!--  FIXME how to get select and edit on the same row -->
+			<fieldset>
+				<select id='settings_categories'>
 
-        </div> <!-- page -->
+				</select> <a href='#edit-category' id='settings_edit-category'
+					data-role='button'>Edit</a>
+			</fieldset>
+
+			<a href='#add-category' id='settings_add-category' data-role='button'>Add
+				Category</a>
+		</div>
+		<div data-role='footer'>
+			<a href='#main' id='settings_done'>Done</a>
+		</div>
+	</div>
+	<!--  end settings -->
+
+	<div data-role='page' id='add-category'>
+		<div data-role='header'>
+			<h1>Add Category</h1>
+		</div>
+		<div data-role='content'>
+			<p>
+				<label for='add-category_name'>Name:</label> <input type='text'
+					id='add-category_name' value='' />
+			</p>
+		</div>
+		<div data-role='footer'>
+			<div data-role='controlgroup' data-type='horizontal'>
+				<a href='#settings' data-role='button' id='add-category_add'>Add</a>
+
+				<a href='#settings' data-role='button' id='add-category_cancel'>Cancel</a>
+			</div>
+		</div>
+	</div>
+	<!--  end add-category -->
+
+	<div data-role='page' id='edit-category'>
+		<div data-role='header'>
+			<h1>Edit Category</h1>
+		</div>
+		<div data-role='content'>
+			<p>
+				<label for='edit-category_name'>Name:</label> <input type='text'
+					id='edit-category_name' name='edit-category_name' value='' />
+			</p>
+		</div>
+		<div data-role='footer'>
+			<div data-role='controlgroup' data-type='horizontal'>
+				<!-- FIXME need to get category id from #settings_categories and then change name -->
+				<a href='#settings' data-role='button' id='edit-category_commit'>Commit</a>
+
+				<a href='#settings' data-role='button' id='edit-category_cancel'>Cancel</a>
+
+				<!-- FIXME need to call delete and make sure to cancel if there are jobs with this category -->
+				<a href='#settings' data-role='button' id='edit-category_delete'>Delete</a>
+			</div>
+		</div>
+	</div>
+	<!--  end add-category -->
+
 
 </body>
 </html>

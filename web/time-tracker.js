@@ -11,10 +11,6 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 // disable ajax loading in jquery mobile. Maybe enable this again later
 // once I understand it better
-$(document).bind("mobileinit", function() {
-        $.mobile.ajaxEnabled = false;
-});
-
 (function($) {
 	if (!$) {
 		throw new Error("jQuery needs to be loaded before time-tracker!");
@@ -118,21 +114,99 @@ $(document).bind("mobileinit", function() {
 				return new_category;
 			}
 		},
-		
-		getCategories: function() {
-                        var categories = [];
+
+		getCategories : function() {
+			var categories = [];
 			jQuery.each(_categories, function(i, val) {
-                                categories.push(val);
+				categories.push(val);
 			});
-                        return categories;
+			return categories;
 		},
 
-                clear: function() {
-                        _clear_local_storage();
-                }
+		/**
+		 * Get a category by id
+		 * 
+		 * @param toFind
+		 *            the id to find
+		 * @returns the category or null
+		 */
+		getCategoryById : function(toFind) {
+			var category = null;
+			jQuery.each(_categories, function(i, val) {
+				if (val.cat_id == toFind) {
+					category = val;
+				}
+			});
+			return category;
+		},
+
+		clear : function() {
+			_clear_local_storage();
+		}
 
 	};
 
 	_load();
 
 })(window.jQuery || window.$);
+
+$(document)
+		.ready(
+				function() {
+					// Anything in here is only executed when the app starts,
+					// not on
+					// each page
+					// load
+
+					// setup button handlers
+					$("#add-category_add").click(
+							function() {
+								var category_name = $("#add-category_name")
+										.val();
+								if (category_name) {
+									var category = $.timeTracker
+											.addCategory(category_name);
+									return category != null;
+								} else {
+									alert("No name");
+									return false;
+								}
+							});
+
+					$("#settings_edit-category")
+							.click(
+									function() {
+										var catid = $("#settings_categories")
+												.val();
+										if (!catid) {
+											alert("No category selected!");
+											return false;
+										} else {
+											var category = $.timeTracker
+													.getCategoryById(catid);
+											if (null == category) {
+												alert("Internal error, not category with id: "
+														+ catid);
+												return false;
+											}
+											$("#edit-category_name").val(
+													category.name);
+											return true;
+										}
+									});
+
+					// initialize data for the settings page as it's loaded
+					$('#settings').live(
+							'pageshow',
+							function(event) {
+								var options = '<option></option>';
+								$.each($.timeTracker.getCategories(), function(
+										index, category) {
+									options += '<option value="'
+											+ category.cat_id + '">'
+											+ category.name + '</option>';
+								});
+								$("#settings_categories").html(options);
+							});
+
+				});

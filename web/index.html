@@ -36,11 +36,11 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
  <div data-role='page' id='main'>
   <div data-role='header'>
-   <!--  FIXME make changeable via javascript -->
    <!--  FIXME make full width -->
-   <h1>
-    <a href='#' data-role='button' id='main_active-job'>No Active Job</a>
-   </h1>
+   <div data-role='controlgroup' data-type='horizonal' id='main_active'>
+    <a data-role='button' id='main_active-job'>No Active
+     Job</a>
+   </div>
   </div>
 
   <div data-role='content'>
@@ -78,7 +78,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     Category</a>
 
    <!-- FIXME add option to set if jobs are sorted by MRU -->
-   
+
    <!--  -->
    <a id='settings_clear-data' data-role='button'>Clear all data</a>
   </div>
@@ -131,7 +131,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   </div>
  </div>
  <!--  end add-category -->
- 
+
 
  <div data-role='page' id='add-job'>
   <div data-role='header'>

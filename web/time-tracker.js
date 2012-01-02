@@ -348,15 +348,28 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 		/**
 		 * Set the active job id.
+		 * 
+		 * @param job_id
+		 *            the new job_id, may be null to signal that no job should
+		 *            be active
 		 */
 		setActiveJob : function(job_id) {
-			var job = $.timeTracker.getJobById(job_id);
-			if (null == job) {
-				alert("Job with id " + job_id + " cannot be found");
-			}
 			// FIXME need to start and stop clock here
-			$("#main_active-job").text(job.name);
-			_active_job_id = job.job_id;
+
+			if (null != job_id) {
+				var job = $.timeTracker.getJobById(job_id);
+				if (null == job) {
+					alert("Job with id " + job_id + " cannot be found");
+				}
+				$("#main_active-job").text(job.name);
+			} else {
+				$("#main_active-job").text("No Active Job");
+			}
+			
+			//FIXME need to cause refresh of the header to get size right
+			
+			
+			_active_job_id = job_id;
 			_save();
 			$.timeTracker.refreshJobList();
 		},
@@ -537,8 +550,11 @@ $(document)
 										}
 									});
 
-					$('#main').live('pageshow', function(event) {
+					$("#main").live('pageshow', function(event) {
 						$.timeTracker.refreshJobList();
+					});
+					$("#main_active-job").click(function() {
+						$.timeTracker.setActiveJob(null);
 					});
 
 				}); // end ready function

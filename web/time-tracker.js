@@ -117,7 +117,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		this.name = name;
 		this.cat_id = category_id;
 		/*
-		 * FIXME - check how to add methods to "class"
+		 * TODO - check how to add methods to "class"
 		 * Category.prototype.set_name = function(new_name) {
 		 * if(check_duplicate_category(new_name)) { alert("There already exists
 		 * a category with the name '" + new_name + "'"); } else { this.name =
@@ -128,8 +128,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 	}
 
 	/**
-	 * Constructor for a job.. Finds the first free ID and assigns it to this
-	 * new job.
+	 * Constructor for a job. Finds the first free ID and assigns it to this new
+	 * job.
 	 */
 	function Job(name, job_number, category_id, notes) {
 		var job_id;
@@ -146,8 +146,26 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		this.job_number = job_number;
 		this.cat_id = category_id;
 		this.notes = notes;
+		this.intervals = {}; // key is TimeInterval.start_time
 		_jobs[this.job_id] = this;
 		_save();
+	}
+
+	/**
+	 * Time interval.
+	 * 
+	 * @param start_time
+	 *            the start time of the interval
+	 * @param end_time
+	 *            the end time of the interval
+	 * @param wah
+	 *            a boolean stating if we're "Working at Home
+	 * 
+	 */
+	function TimeInterval(start_time, end_time, wah) {
+		this.start_time = start_time;
+		this.end_time = end_time;
+		this.wah = wah;
 	}
 
 	// //////////////////////// PUBLIC INTERFACE /////////////////////////
@@ -366,10 +384,9 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 			} else {
 				$("#main_active-job").text("No Active Job");
 			}
-			
-			//FIXME need to cause refresh of the header to get size right
-			
-			
+
+			// FIXME need to cause refresh of the header to get size right
+
 			_active_job_id = job_id;
 			_save();
 			$.timeTracker.refreshJobList();

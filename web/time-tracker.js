@@ -28,6 +28,9 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 	var _jobs_use_mru = false; // if true, then list jobs by most recently used
 	// FIXME need to track MRU list for jobs
 	var _active_job_id = null; // active job id
+	var _active_job_start = null;
+	var _time_intervals = [];
+	var _wah = false; // working at home flag
 
 	/**
 	 * Save the current state to local storage.
@@ -37,6 +40,9 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		$.jStorage.set(STORAGE_PREFIX + "_jobs", _jobs);
 		$.jStorage.set(STORAGE_PREFIX + "_jobs_use_mru", _jobs_use_mru);
 		$.jStorage.set(STORAGE_PREFIX + "_active_job_id", _active_job_id);
+		$.jStorage.set(STORAGE_PREFIX + "_active_job_start", _active_job_start);
+		$.jStorage.set(STORAGE_PREFIX + "_time_intervals", _time_intervals);
+		$.jStorage.set(STORAGE_PREFIX + "_wah", _wah);
 	}
 
 	/**
@@ -58,6 +64,18 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		value = $.jStorage.get(STORAGE_PREFIX + "_active_job_id");
 		if (null != value) {
 			_active_job_id = value;
+		}
+		value = $.jStorage.get(STORAGE_PREFIX + "_active_job_start");
+		if (null != value) {
+			_active_job_start = value;
+		}
+		value = $.jStorage.get(STORAGE_PREFIX + "_time_intervals");
+		if (null != value) {
+			_time_intervals = value;
+		}
+		value = $.jStorage.get(STORAGE_PREFIX + "_wah");
+		if (null != value) {
+			_wah = value;
 		}
 	}
 
@@ -117,7 +135,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		this.name = name;
 		this.cat_id = category_id;
 		/*
-		 * FIXME - check how to add methods to "class"
+		 * TODO - check how to add methods to "class"
 		 * Category.prototype.set_name = function(new_name) {
 		 * if(check_duplicate_category(new_name)) { alert("There already exists
 		 * a category with the name '" + new_name + "'"); } else { this.name =
@@ -128,8 +146,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 	}
 
 	/**
-	 * Constructor for a job.. Finds the first free ID and assigns it to this
-	 * new job.
+	 * Constructor for a job. Finds the first free ID and assigns it to this new
+	 * job.
 	 */
 	function Job(name, job_number, category_id, notes) {
 		var job_id;
@@ -150,11 +168,37 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		_save();
 	}
 
+	/**
+	 * Time interval.
+	 * 
+	 * @param start_time
+	 *            the start time of the interval
+	 * @param end_time
+	 *            the end time of the interval
+	 * @param job_id
+	 *            the job that this interval applies to
+	 * @param wah
+	 *            a boolean stating if we're "Working at Home
+	 * 
+	 */
+	function TimeInterval(start_time, end_time, job_id, wah) {
+		this.start_time = start_time;
+		this.end_time = end_time;
+		this.job_id = job_id;
+		this.wah = wah;
+	}
+
 	// //////////////////////// PUBLIC INTERFACE /////////////////////////
 
 	$.timeTracker = {
 		/* Version number */
 		version : "0.1",
+
+		addTimeInterval : function(start, end, job_id, wah) {
+			var interval = new TimeInterval(start, end, job_id, wah);
+			_time_intervals.push(interval);
+			_save();
+		},
 
 		/**
 		 * Create a new category.
@@ -355,21 +399,29 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		 *            be active
 		 */
 		setActiveJob : function(job_id) {
-			// FIXME need to start and stop clock here
+			var now = new Date();
+			if (null != _active_job_id) {
+				if (null == _active_job_start) {
+					alert("Internal error, _active_job_start shouldn't be null if _active_job_id is non-null");
+				}
+				$.timeTracker.addTimeInterval(_active_job_start, now,
+						_active_job_id, _wah);
+			}
 
 			if (null != job_id) {
 				var job = $.timeTracker.getJobById(job_id);
 				if (null == job) {
 					alert("Job with id " + job_id + " cannot be found");
 				}
+				_active_job_start = now;
 				$("#main_active-job").text(job.name);
 			} else {
+				_active_job_start = null;
 				$("#main_active-job").text("No Active Job");
 			}
-			
-			//FIXME need to cause refresh of the header to get size right
-			
-			
+
+			// FIXME need to cause refresh of the header to get size right
+
 			_active_job_id = job_id;
 			_save();
 			$.timeTracker.refreshJobList();

@@ -70,3 +70,4 @@ TODO
 * How to tell browser when to flush cache?
 * Add support for subjobs
 * How to get select box to behave. After adding values via javascript there isno selected value.
+* Add default buttons to single input forms

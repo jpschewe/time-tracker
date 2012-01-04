@@ -30,7 +30,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 	var _active_job_id = null; // active job id
 	var _active_job_start = null;
 	var _time_intervals = [];
-	var _wah = false; // working at home flag
+	var _wah = false; // working at home flag FIXME allow to be set
 
 	/**
 	 * Save the current state to local storage.
@@ -197,6 +197,13 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		addTimeInterval : function(start, end, job_id, wah) {
 			var interval = new TimeInterval(start, end, job_id, wah);
 			_time_intervals.push(interval);
+			_save();
+		},
+
+		setWAH : function(value) {
+			// set the active job to force a new time interval to be created
+			$.timeTracker.setActiveJob(_active_job_id);
+			_wah = value;
 			_save();
 		},
 
@@ -608,6 +615,9 @@ $(document)
 					});
 					$("#main_active-job").click(function() {
 						$.timeTracker.setActiveJob(null);
+					});
+					$("#main_wah").click(function() {
+						$.timeTracker.setWAH($("#main_wah").is(":checked"));
 					});
 
 				}); // end ready function

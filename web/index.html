@@ -19,7 +19,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
 <link rel="stylesheet"
- href="extlib/jquery.mobile-1.0/jquery.mobile-1.0.min.css" />
+	href="extlib/jquery.mobile-1.0/jquery.mobile-1.0.min.css" />
 
 <link rel='stylesheet' type='text/css' href='style.css' />
 
@@ -28,145 +28,152 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 <script src="extlib/jstorage.js"></script>
 <script src="time-tracker.js"></script>
 <script type="text/javascript"
- src="extlib/jquery.mobile-1.0/jquery.mobile-1.0.min.js"></script>
+	src="extlib/jquery.mobile-1.0/jquery.mobile-1.0.min.js"></script>
 
 
 </head>
 <body>
 
- <div data-role='page' id='main'>
-  <div data-role='header'>
-  <!-- FIXME put time interval duration in header -->
-   <!--  FIXME make full width -->
-   <div data-role='controlgroup' data-type='horizonal' id='main_active'>
-    <a data-role='button' id='main_active-job'>No Active
-     Job</a>
-   </div>
-  </div>
+	<div data-role='page' id='main'>
+		<div data-role='header'>
+			<!-- FIXME put time interval duration in header -->
+			<!--  FIXME put day total in header -->
+			<!--  FIXME make full width -->
+			<fieldset data-role='controlgroup' data-type='horizonal'
+				id='main_active'>
 
-  <div data-role='content'>
+				<!-- FIXME get this on the same row as the active job button -->
+				<label for='main_wah'>WAH</label> <input type='checkbox'
+					id='main_wah' value='true' class='custom' />
 
-   <ul id='main_joblist' data-role='listview'>
-   </ul>
-  </div>
+				<!--  -->
+				<a data-role='button' id='main_active-job'>No Active Job</a>
+			</fieldset>
+		</div>
 
-  <div data-role='footer'>
+		<div data-role='content'>
 
-   <!--  -->
-   <a href="#add-job" data-role='button' data-icon='plus'></a>
+			<ul id='main_joblist' data-role='listview'>
+			</ul>
+		</div>
 
-   <!--  -->
-   <a href="#settings" data-role='button' data-icon='gear'></a>
-  </div>
- </div>
- <!-- end home -->
+		<div data-role='footer'>
 
+			<!--  -->
+			<a href="#add-job" data-role='button' data-icon='plus'></a>
 
- <div data-role='page' id='settings'>
-  <div data-role='header'>
-   <h1>Settings</h1>
-  </div>
-  <div data-role='content'>
-   <!--  FIXME how to get select and edit on the same row -->
-   <fieldset>
-    <select id='settings_category'>
-
-    </select> <a href='#edit-category' id='settings_edit-category'
-     data-role='button'>Edit</a>
-   </fieldset>
-
-   <a href='#add-category' id='settings_add-category' data-role='button'>Add
-    Category</a>
-
-   <!-- FIXME add option to set if jobs are sorted by MRU -->
-
-   <!--  -->
-   <a id='settings_clear-data' data-role='button'>Clear all data</a>
-  </div>
-  <div data-role='footer'>
-   <a href='#main' id='settings_done'>Done</a>
-  </div>
- </div>
- <!--  end settings -->
+			<!--  -->
+			<a href="#settings" data-role='button' data-icon='gear'></a>
+		</div>
+	</div>
+	<!-- end home -->
 
 
- <div data-role='page' id='add-category'>
-  <div data-role='header'>
-   <h1>Add Category</h1>
-  </div>
-  <div data-role='content'>
-   <p>
-    <label for='add-category_name'>Name:</label> <input type='text'
-     id='add-category_name' value='' />
-   </p>
-  </div>
-  <div data-role='footer'>
-   <div data-role='controlgroup' data-type='horizontal'>
-    <a href='#settings' data-role='button' id='add-category_add'>Add</a>
+	<div data-role='page' id='settings'>
+		<div data-role='header'>
+			<h1>Settings</h1>
+		</div>
+		<div data-role='content'>
+			<!--  FIXME how to get select and edit on the same row -->
+			<fieldset>
+				<select id='settings_category'>
 
-    <a href='#settings' data-role='button' id='add-category_cancel'>Cancel</a>
-   </div>
-  </div>
- </div>
- <!--  end add-category -->
+				</select> <a href='#edit-category' id='settings_edit-category'
+					data-role='button'>Edit</a>
+			</fieldset>
 
+			<a href='#add-category' id='settings_add-category' data-role='button'>Add
+				Category</a>
 
- <div data-role='page' id='edit-category'>
-  <div data-role='header'>
-   <h1>Edit Category</h1>
-  </div>
-  <div data-role='content'>
-   <p>
-    <label for='edit-category_name'>Name:</label> <input type='text'
-     id='edit-category_name' value='' />
-   </p>
-  </div>
-  <div data-role='footer'>
-   <div data-role='controlgroup' data-type='horizontal'>
-    <a href='#settings' data-role='button' id='edit-category_commit'>Commit</a>
+			<!-- FIXME add option to set if jobs are sorted by MRU -->
 
-    <a href='#settings' data-role='button' id='edit-category_cancel'>Cancel</a>
-
-    <a href='#settings' data-role='button' id='edit-category_delete'>Delete</a>
-   </div>
-  </div>
- </div>
- <!--  end add-category -->
+			<!--  -->
+			<a id='settings_clear-data' data-role='button'>Clear all data</a>
+		</div>
+		<div data-role='footer'>
+			<a href='#main' id='settings_done'>Done</a>
+		</div>
+	</div>
+	<!--  end settings -->
 
 
- <div data-role='page' id='add-job'>
-  <div data-role='header'>
-   <h1>Add Job</h1>
-  </div>
-  <div data-role='content'>
-   <p>
-    <label for='add-job_name'>Name:</label> <input type='text'
-     id='add-job_name' value='' />
+	<div data-role='page' id='add-category'>
+		<div data-role='header'>
+			<h1>Add Category</h1>
+		</div>
+		<div data-role='content'>
+			<p>
+				<label for='add-category_name'>Name:</label> <input type='text'
+					id='add-category_name' value='' />
+			</p>
+		</div>
+		<div data-role='footer'>
+			<div data-role='controlgroup' data-type='horizontal'>
+				<a href='#settings' data-role='button' id='add-category_add'>Add</a>
 
-    <!--  -->
-    <label for='add-job_job-number'>Job Number:</label> <input
-     type='text' id='add-job_job-number' value='' />
+				<a href='#settings' data-role='button' id='add-category_cancel'>Cancel</a>
+			</div>
+		</div>
+	</div>
+	<!--  end add-category -->
 
-    <!--  -->
-    <label for='add-job_category'>Category:</label> <select
-     id='add-job_category'>
-    </select>
 
-    <!--  -->
-    <label for='add-job_notes'>Notes:</label>
-    <textarea id='add-job_notes'></textarea>
+	<div data-role='page' id='edit-category'>
+		<div data-role='header'>
+			<h1>Edit Category</h1>
+		</div>
+		<div data-role='content'>
+			<p>
+				<label for='edit-category_name'>Name:</label> <input type='text'
+					id='edit-category_name' value='' />
+			</p>
+		</div>
+		<div data-role='footer'>
+			<div data-role='controlgroup' data-type='horizontal'>
+				<a href='#settings' data-role='button' id='edit-category_commit'>Commit</a>
 
-   </p>
+				<a href='#settings' data-role='button' id='edit-category_cancel'>Cancel</a>
 
-  </div>
-  <div data-role='footer'>
-   <div data-role='controlgroup' data-type='horizontal'>
-    <a href='#main' data-role='button' id='add-job_add'>Add</a> <a
-     href='#main' data-role='button' id='add-job_cancel'>Cancel</a>
-   </div>
-  </div>
- </div>
- <!-- end add-job -->
+				<a href='#settings' data-role='button' id='edit-category_delete'>Delete</a>
+			</div>
+		</div>
+	</div>
+	<!--  end add-category -->
+
+
+	<div data-role='page' id='add-job'>
+		<div data-role='header'>
+			<h1>Add Job</h1>
+		</div>
+		<div data-role='content'>
+			<p>
+				<label for='add-job_name'>Name:</label> <input type='text'
+					id='add-job_name' value='' />
+
+				<!--  -->
+				<label for='add-job_job-number'>Job Number:</label> <input
+					type='text' id='add-job_job-number' value='' />
+
+				<!--  -->
+				<label for='add-job_category'>Category:</label> <select
+					id='add-job_category'>
+				</select>
+
+				<!--  -->
+				<label for='add-job_notes'>Notes:</label>
+				<textarea id='add-job_notes'></textarea>
+
+			</p>
+
+		</div>
+		<div data-role='footer'>
+			<div data-role='controlgroup' data-type='horizontal'>
+				<a href='#main' data-role='button' id='add-job_add'>Add</a> <a
+					href='#main' data-role='button' id='add-job_cancel'>Cancel</a>
+			</div>
+		</div>
+	</div>
+	<!-- end add-job -->
 
 </body>
 </html>

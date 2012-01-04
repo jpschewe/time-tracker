@@ -523,10 +523,21 @@ $(document)
 										return $.timeTracker.setCategoryName(
 												category, category_name);
 									});
-					$("#edit-category_delete").click(function() {
-						var category_id = $("#settings_category").val();
-						return $.timeTracker.deleteCategory(category_id);
-					});
+					$("#edit-category_delete")
+							.click(
+									function() {
+										var category_id = $(
+												"#settings_category").val();
+										var category = $.timeTracker
+												.getCategoryById(category_id);
+										if (confirm("Are you sure you want to delete category '"
+												+ category.name + "'?")) {
+											return $.timeTracker
+													.deleteCategory(category_id);
+										} else {
+											return false;
+										}
+									});
 
 					$("#add-job_add").click(
 							function() {

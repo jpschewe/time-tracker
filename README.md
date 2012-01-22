@@ -65,6 +65,9 @@ Globals
 
 TODO
 ====
+* Display time entry on a summary page
+* Be able to edit jobs
+* Use a non-scrolling header
 * Update cache.manifest to contain references to all javascript libraries
 * Use cache.manifest to cache on mobile devices
 * How to tell browser when to flush cache?

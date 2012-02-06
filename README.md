@@ -71,3 +71,4 @@ TODO
 * Add support for subjobs
 * How to get select box to behave. After adding values via javascript there isno selected value.
 * Add default buttons to single input forms
+* allow one to start/stop clock at a specified time instead of the current time

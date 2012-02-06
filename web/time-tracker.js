@@ -12,623 +12,633 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 // disable ajax loading in jquery mobile. Maybe enable this again later
 // once I understand it better
 (function($) {
-	if (!$) {
-		throw new Error("jQuery needs to be loaded before time-tracker!");
-	}
-	if (!$.jStorage) {
-		throw new Error("jStorage needs to be loaded before time-tracker!");
-	}
+    if (!$) {
+        throw new Error("jQuery needs to be loaded before time-tracker!");
+    }
+    if (!$.jStorage) {
+        throw new Error("jStorage needs to be loaded before time-tracker!");
+    }
 
-	var STORAGE_PREFIX = "time-tracker.";
+    var STORAGE_PREFIX = "time-tracker.";
 
-	// //////////////////////// PRIVATE METHODS ////////////////////////
+    // //////////////////////// PRIVATE METHODS ////////////////////////
 
-	var _categories = {};
-	var _jobs = {};
-	var _jobs_use_mru = false; // if true, then list jobs by most recently used
-	// FIXME need to track MRU list for jobs
-	var _active_job_id = null; // active job id
-	var _active_job_start = null;
-	var _time_intervals = [];
-	var _wah = false; // working at home flag FIXME allow to be set
+    var _categories = {};
+    var _jobs = {};
+    var _jobs_use_mru = false; // if true, then list jobs by most recently used
+    // FIXME need to track MRU list for jobs
+    var _active_job_id = null; // active job id
+    var _active_job_start = null;
+    var _time_intervals = [];
+    var _wah = false; // working at home flag FIXME allow to be set
 
-	/**
-	 * Save the current state to local storage.
-	 */
-	function _save() {
-		$.jStorage.set(STORAGE_PREFIX + "_categories", _categories);
-		$.jStorage.set(STORAGE_PREFIX + "_jobs", _jobs);
-		$.jStorage.set(STORAGE_PREFIX + "_jobs_use_mru", _jobs_use_mru);
-		$.jStorage.set(STORAGE_PREFIX + "_active_job_id", _active_job_id);
-		$.jStorage.set(STORAGE_PREFIX + "_active_job_start", _active_job_start);
-		$.jStorage.set(STORAGE_PREFIX + "_time_intervals", _time_intervals);
-		$.jStorage.set(STORAGE_PREFIX + "_wah", _wah);
-	}
+    /**
+     * Save the current state to local storage.
+     */
+    function _save() {
+        $.jStorage.set(STORAGE_PREFIX + "_categories", _categories);
+        $.jStorage.set(STORAGE_PREFIX + "_jobs", _jobs);
+        $.jStorage.set(STORAGE_PREFIX + "_jobs_use_mru", _jobs_use_mru);
+        $.jStorage.set(STORAGE_PREFIX + "_active_job_id", _active_job_id);
+        $.jStorage.set(STORAGE_PREFIX + "_active_job_start", _active_job_start);
+        $.jStorage.set(STORAGE_PREFIX + "_time_intervals", _time_intervals);
+        $.jStorage.set(STORAGE_PREFIX + "_wah", _wah);
+    }
 
-	/**
-	 * Load the current state from local storage.
-	 */
-	function _load() {
-		var value = $.jStorage.get(STORAGE_PREFIX + "_categories");
-		if (null != value) {
-			_categories = value;
-		}
-		value = $.jStorage.get(STORAGE_PREFIX + "_jobs");
-		if (null != value) {
-			_jobs = value;
-		}
-		value = $.jStorage.get(STORAGE_PREFIX + "_jobs_use_mru");
-		if (null != value) {
-			_jobs_use_mru = value;
-		}
-		value = $.jStorage.get(STORAGE_PREFIX + "_active_job_id");
-		if (null != value) {
-			_active_job_id = value;
-		}
-		value = $.jStorage.get(STORAGE_PREFIX + "_active_job_start");
-		if (null != value) {
-			_active_job_start = value;
-		}
-		value = $.jStorage.get(STORAGE_PREFIX + "_time_intervals");
-		if (null != value) {
-			_time_intervals = value;
-		}
-		value = $.jStorage.get(STORAGE_PREFIX + "_wah");
-		if (null != value) {
-			_wah = value;
-		}
-	}
+    /**
+     * Load the current state from local storage.
+     */
+    function _load() {
+        var value = $.jStorage.get(STORAGE_PREFIX + "_categories");
+        if (null != value) {
+            _categories = value;
+        }
+        value = $.jStorage.get(STORAGE_PREFIX + "_jobs");
+        if (null != value) {
+            _jobs = value;
+        }
+        value = $.jStorage.get(STORAGE_PREFIX + "_jobs_use_mru");
+        if (null != value) {
+            _jobs_use_mru = value;
+        }
+        value = $.jStorage.get(STORAGE_PREFIX + "_active_job_id");
+        if (null != value) {
+            _active_job_id = value;
+        }
+        value = $.jStorage.get(STORAGE_PREFIX + "_active_job_start");
+        if (null != value) {
+            _active_job_start = value;
+        }
+        value = $.jStorage.get(STORAGE_PREFIX + "_time_intervals");
+        if (null != value) {
+            _time_intervals = value;
+        }
+        value = $.jStorage.get(STORAGE_PREFIX + "_wah");
+        if (null != value) {
+            _wah = value;
+        }
+    }
 
-	/**
-	 * Clear anything from local storage with a prefix of STORAGE_PREFIX.
-	 */
-	function _clear_local_storage() {
-		$.each($.jStorage.index(), function(index, value) {
-			if (value.substring(0, STORAGE_PREFIX.length) == STORAGE_PREFIX) {
-				$.jStorage.deleteKey(value);
-			}
-		});
-	}
+    /**
+     * Clear anything from local storage with a prefix of STORAGE_PREFIX.
+     */
+    function _clear_local_storage() {
+        $.each($.jStorage.index(), function(index, value) {
+            if (value.substring(0, STORAGE_PREFIX.length) == STORAGE_PREFIX) {
+                $.jStorage.deleteKey(value);
+            }
+        });
+    }
 
-	/**
-	 * @return true if a category with the specified name exists
-	 */
-	function _check_duplicate_category(name) {
-		var duplicate = false;
-		$.each(_categories, function(i, val) {
-			if (val.name == name) {
-				duplicate = true;
-			}
-		});
-		return duplicate;
-	}
+    /**
+     * @return true if a category with the specified name exists
+     */
+    function _check_duplicate_category(name) {
+        var duplicate = false;
+        $.each(_categories, function(i, val) {
+            if (val.name == name) {
+                duplicate = true;
+            }
+        });
+        return duplicate;
+    }
 
-	/**
-	 * @return true if a job with the specified name exists
-	 */
-	function _check_duplicate_job(name) {
-		var duplicate = false;
-		$.each(_jobs, function(i, val) {
-			if (val.name == name) {
-				duplicate = true;
-			}
-		});
-		return duplicate;
-	}
+    /**
+     * @return true if a job with the specified name exists
+     */
+    function _check_duplicate_job(name) {
+        var duplicate = false;
+        $.each(_jobs, function(i, val) {
+            if (val.name == name) {
+                duplicate = true;
+            }
+        });
+        return duplicate;
+    }
 
-	/**
-	 * Constructor for a category. Finds the first free ID and assigns it to
-	 * this new category.
-	 */
-	function Category(name) {
-		var category_id;
-		// find the next available id
-		for (category_id = 0; category_id < Number.MAX_VALUE
-				&& _categories[category_id]; category_id = category_id + 1)
-			;
+    /**
+     * Constructor for a category. Finds the first free ID and assigns it to
+     * this new category.
+     */
+    function Category(name) {
+        var category_id;
+        // find the next available id
+        for (category_id = 0; category_id < Number.MAX_VALUE && _categories[category_id]; category_id = category_id + 1)
+            ;
 
-		if (category_id == Number.MAX_VALUE
-				|| category_id + 1 == Number.MAX_VALUE) {
-			throw "No free category IDs";
-		}
+        if (category_id == Number.MAX_VALUE || category_id + 1 == Number.MAX_VALUE) {
+            throw "No free category IDs";
+        }
 
-		this.name = name;
-		this.cat_id = category_id;
-		/*
-		 * TODO - check how to add methods to "class"
-		 * Category.prototype.set_name = function(new_name) {
-		 * if(check_duplicate_category(new_name)) { alert("There already exists
-		 * a category with the name '" + new_name + "'"); } else { this.name =
-		 * new_name; } };
-		 */
-		_categories[this.cat_id] = this;
-		_save();
-	}
+        this.name = name;
+        this.cat_id = category_id;
+        /*
+         * TODO - check how to add methods to "class"
+         * Category.prototype.set_name = function(new_name) {
+         * if(check_duplicate_category(new_name)) { alert("There already exists
+         * a category with the name '" + new_name + "'"); } else { this.name =
+         * new_name; } };
+         */
+        _categories[this.cat_id] = this;
+        _save();
+    }
 
-	/**
-	 * Constructor for a job. Finds the first free ID and assigns it to this new
-	 * job.
-	 */
-	function Job(name, job_number, category_id, notes) {
-		var job_id;
-		// find the next available id
-		for (job_id = 0; job_id < Number.MAX_VALUE && _jobs[job_id]; job_id = job_id + 1)
-			;
+    /**
+     * Constructor for a job. Finds the first free ID and assigns it to this new
+     * job.
+     */
+    function Job(name, job_number, category_id, notes) {
+        var job_id;
+        // find the next available id
+        for (job_id = 0; job_id < Number.MAX_VALUE && _jobs[job_id]; job_id = job_id + 1)
+            ;
 
-		if (job_id == Number.MAX_VALUE || job_id + 1 == Number.MAX_VALUE) {
-			throw "No free job IDs";
-		}
+        if (job_id == Number.MAX_VALUE || job_id + 1 == Number.MAX_VALUE) {
+            throw "No free job IDs";
+        }
 
-		this.job_id = job_id;
-		this.name = name;
-		this.job_number = job_number;
-		this.cat_id = category_id;
-		this.notes = notes;
-		_jobs[this.job_id] = this;
-		_save();
-	}
+        this.job_id = job_id;
+        this.name = name;
+        this.job_number = job_number;
+        this.cat_id = category_id;
+        this.notes = notes;
+        _jobs[this.job_id] = this;
+        _save();
+    }
 
-	/**
-	 * Time interval.
-	 * 
-	 * @param start_time
-	 *            the start time of the interval
-	 * @param end_time
-	 *            the end time of the interval
-	 * @param job_id
-	 *            the job that this interval applies to
-	 * @param wah
-	 *            a boolean stating if we're "Working at Home
-	 * 
-	 */
-	function TimeInterval(start_time, end_time, job_id, wah) {
-		this.start_time = start_time;
-		this.end_time = end_time;
-		this.job_id = job_id;
-		this.wah = wah;
-	}
+    /**
+     * Time interval.
+     * 
+     * @param start_time
+     *            the start time of the interval
+     * @param end_time
+     *            the end time of the interval
+     * @param job_id
+     *            the job that this interval applies to
+     * @param wah
+     *            a boolean stating if we're "Working at Home
+     * 
+     */
+    function TimeInterval(start_time, end_time, job_id, wah) {
+        this.start_time = start_time;
+        this.end_time = end_time;
+        this.job_id = job_id;
+        this.wah = wah;
+    }
 
-	// //////////////////////// PUBLIC INTERFACE /////////////////////////
+    // //////////////////////// PUBLIC INTERFACE /////////////////////////
 
-	$.timeTracker = {
-		/* Version number */
-		version : "0.1",
+    $.timeTracker = {
+        /* Version number */
+        version : "0.1",
 
-		addTimeInterval : function(start, end, job_id, wah) {
-			var interval = new TimeInterval(start, end, job_id, wah);
-			_time_intervals.push(interval);
-			_save();
-		},
+        addTimeInterval : function(start, end, job_id, wah) {
+            var interval = new TimeInterval(start, end, job_id, wah);
+            _time_intervals.push(interval);
+            _save();
+        },
 
-		setWAH : function(value) {
-			// set the active job to force a new time interval to be created
-			$.timeTracker.setActiveJob(_active_job_id);
-			_wah = value;
-			_save();
-		},
+        setWAH : function(value) {
+            // set the active job to force a new time interval to be created
+            $.timeTracker.setActiveJob(_active_job_id);
+            _wah = value;
+            _save();
+        },
 
-		/**
-		 * Create a new category.
-		 * 
-		 * @param category_name
-		 *            the name of the category
-		 * @returns the new category or Null if there is a duplicate
-		 */
-		addCategory : function(category_name) {
-			if (_check_duplicate_category(category_name)) {
-				alert("There already exists a category with the name '"
-						+ category_name + "'");
-				return null;
-			} else {
-				var new_category = new Category(category_name);
-				return new_category;
-			}
-		},
+        /**
+         * Create a new category.
+         * 
+         * @param category_name
+         *            the name of the category
+         * @returns the new category or Null if there is a duplicate
+         */
+        addCategory : function(category_name) {
+            if (_check_duplicate_category(category_name)) {
+                alert("There already exists a category with the name '" + category_name + "'");
+                return null;
+            } else {
+                var new_category = new Category(category_name);
+                return new_category;
+            }
+        },
 
-		/**
-		 * Set the name of a category
-		 * 
-		 * @param category
-		 *            the category
-		 * @param category_name
-		 *            the new name
-		 * @returns if the set was successful
-		 */
-		setCategoryName : function(category, category_name) {
-			if (_check_duplicate_category(category_name)) {
-				alert("There already exists a category with the name '"
-						+ category_name + "'");
-				return false;
-			} else {
-				category.name = category_name;
-				_save();
-				return true;
-			}
-		},
+        /**
+         * Set the name of a category
+         * 
+         * @param category
+         *            the category
+         * @param category_name
+         *            the new name
+         * @returns if the set was successful
+         */
+        setCategoryName : function(category, category_name) {
+            if (_check_duplicate_category(category_name)) {
+                alert("There already exists a category with the name '" + category_name + "'");
+                return false;
+            } else {
+                category.name = category_name;
+                _save();
+                return true;
+            }
+        },
 
-		/**
-		 * Get the categories known to the system.
-		 * 
-		 * @returns {Array} sorted by name
-		 */
-		getCategories : function() {
-			var categories = [];
-			$.each(_categories, function(i, val) {
-				categories.push(val);
-			});
-			categories.sort(function(a, b) {
-				if (a.name == b.name) {
-					return 0;
-				} else if (a.name < b.name) {
-					return -1;
-				} else {
-					return 1;
-				}
-			});
-			return categories;
-		},
+        /**
+         * Get the categories known to the system.
+         * 
+         * @returns {Array} sorted by name
+         */
+        getCategories : function() {
+            var categories = [];
+            $.each(_categories, function(i, val) {
+                categories.push(val);
+            });
+            categories.sort(function(a, b) {
+                if (a.name == b.name) {
+                    return 0;
+                } else if (a.name < b.name) {
+                    return -1;
+                } else {
+                    return 1;
+                }
+            });
+            return categories;
+        },
 
-		/**
-		 * Get a category by id
-		 * 
-		 * @param toFind
-		 *            the id to find
-		 * @returns the category or null
-		 */
-		getCategoryById : function(toFind) {
-			var category = null;
-			$.each(_categories, function(i, val) {
-				if (val.cat_id == toFind) {
-					category = val;
-				}
-			});
-			return category;
-		},
+        /**
+         * Get a category by id
+         * 
+         * @param toFind
+         *            the id to find
+         * @returns the category or null
+         */
+        getCategoryById : function(toFind) {
+            var category = null;
+            $.each(_categories, function(i, val) {
+                if (val.cat_id == toFind) {
+                    category = val;
+                }
+            });
+            return category;
+        },
 
-		/**
-		 * Delete a category. Alert on an error
-		 * 
-		 * @param category_id
-		 *            the id of the category to delete
-		 * @returns {Boolean} if the delete succeeded
-		 */
-		deleteCategory : function(category_id) {
-			var can_delete = true;
-			$
-					.each(
-							$.timeTracker.getJobs(),
-							function(index, job) {
-								if (job.cat_id == category_id) {
-									can_delete = false;
-									alert("Job "
-											+ job.name
-											+ " still references this category, cannot delete");
-								}
-							});
-			if (can_delete) {
-				delete _categories[category_id];
-				_save();
-				return true;
-			} else {
-				return false;
-			}
+        /**
+         * Delete a category. Alert on an error
+         * 
+         * @param category_id
+         *            the id of the category to delete
+         * @returns {Boolean} if the delete succeeded
+         */
+        deleteCategory : function(category_id) {
+            var can_delete = true;
+            $.each($.timeTracker.getJobs(), function(index, job) {
+                if (job.cat_id == category_id) {
+                    can_delete = false;
+                    alert("Job " + job.name + " still references this category, cannot delete");
+                }
+            });
+            if (can_delete) {
+                delete _categories[category_id];
+                _save();
+                return true;
+            } else {
+                return false;
+            }
 
-		},
+        },
 
-		/**
-		 * Create a new job.
-		 * 
-		 * @param job_name
-		 *            the name of the job
-		 * @param job_number
-		 *            the job number for the job (may be empty)
-		 * @param notes
-		 *            any notes for this job
-		 * @param category_id
-		 *            the id of the category for this job
-		 * @returns the new category or Null if there is a duplicate
-		 */
-		addJob : function(job_name, job_number, category_id, notes) {
-			if (_check_duplicate_job(job_name)) {
-				alert("There already exists a job with the name '" + job_name
-						+ "'");
-				return null;
-			} else {
-				var new_job = new Job(job_name, job_number, category_id, notes);
-				return new_job;
-			}
-		},
+        /**
+         * Create a new job.
+         * 
+         * @param job_name
+         *            the name of the job
+         * @param job_number
+         *            the job number for the job (may be empty)
+         * @param notes
+         *            any notes for this job
+         * @param category_id
+         *            the id of the category for this job
+         * @returns the new category or Null if there is a duplicate
+         */
+        addJob : function(job_name, job_number, category_id, notes) {
+            if (_check_duplicate_job(job_name)) {
+                alert("There already exists a job with the name '" + job_name + "'");
+                return null;
+            } else {
+                var new_job = new Job(job_name, job_number, category_id, notes);
+                return new_job;
+            }
+        },
 
-		/**
-		 * Get the list of jobs to display on the main screen. This makes sure
-		 * they are sorted correctly and automatically skips the active job.
-		 * 
-		 * @returns {Array} sorted by name
-		 */
-		getJobsList : function() {
-			var jobs = [];
-			$.each(_jobs, function(i, val) {
-				if (val.job_id != _active_job_id) {
-					jobs.push(val);
-				}
-			});
-			// FIXME need to handle MRU list
-			if (_jobs_use_mru) {
-				alert("Jobs MRU list not yet implemented");
-			}
-			jobs.sort(function(a, b) {
-				if (a.name == b.name) {
-					return 0;
-				} else if (a.name < b.name) {
-					return -1;
-				} else {
-					return 1;
-				}
-			});
-			return jobs;
-		},
+        /**
+         * Get the list of jobs to display on the main screen. This makes sure
+         * they are sorted correctly and automatically skips the active job.
+         * 
+         * @returns {Array} sorted by name
+         */
+        getJobsList : function() {
+            var jobs = [];
+            $.each(_jobs, function(i, val) {
+                if (val.job_id != _active_job_id) {
+                    jobs.push(val);
+                }
+            });
+            // FIXME need to handle MRU list
+            if (_jobs_use_mru) {
+                alert("Jobs MRU list not yet implemented");
+            }
+            jobs.sort(function(a, b) {
+                if (a.name == b.name) {
+                    return 0;
+                } else if (a.name < b.name) {
+                    return -1;
+                } else {
+                    return 1;
+                }
+            });
+            return jobs;
+        },
 
-		/**
-		 * Get all known jobs
-		 * 
-		 * @returns {Array}
-		 */
-		getJobs : function() {
-			var jobs = [];
-			$.each(_jobs, function(i, val) {
-				jobs.push(val);
-			});
-			return jobs;
-		},
+        /**
+         * Get all known jobs
+         * 
+         * @returns {Array}
+         */
+        getJobs : function() {
+            var jobs = [];
+            $.each(_jobs, function(i, val) {
+                jobs.push(val);
+            });
+            return jobs;
+        },
 
-		/**
-		 * Get a job by id
-		 * 
-		 * @param toFind
-		 *            the id to find
-		 * @returns the job or null
-		 */
-		getJobById : function(toFind) {
-			var job = null;
-			$.each(_jobs, function(i, val) {
-				if (val.job_id == toFind) {
-					job = val;
-				}
-			});
-			return job;
-		},
+        /**
+         * Get a job by id
+         * 
+         * @param toFind
+         *            the id to find
+         * @returns the job or null
+         */
+        getJobById : function(toFind) {
+            var job = null;
+            $.each(_jobs, function(i, val) {
+                if (val.job_id == toFind) {
+                    job = val;
+                }
+            });
+            return job;
+        },
 
-		/**
-		 * Set the active job id.
-		 * 
-		 * @param job_id
-		 *            the new job_id, may be null to signal that no job should
-		 *            be active
-		 */
-		setActiveJob : function(job_id) {
-			var now = new Date();
-			if (null != _active_job_id) {
-				if (null == _active_job_start) {
-					alert("Internal error, _active_job_start shouldn't be null if _active_job_id is non-null");
-				}
-				$.timeTracker.addTimeInterval(_active_job_start, now,
-						_active_job_id, _wah);
-			}
+        /**
+         * Set the active job id.
+         * 
+         * @param job_id
+         *            the new job_id, may be null to signal that no job should
+         *            be active
+         */
+        setActiveJob : function(job_id) {
+            var now = new Date();
+            if (null != _active_job_id) {
+                if (null == _active_job_start) {
+                    alert("Internal error, _active_job_start shouldn't be null if _active_job_id is non-null");
+                }
+                $.timeTracker.addTimeInterval(_active_job_start, now, _active_job_id, _wah);
+            }
 
-			if (null != job_id) {
-				var job = $.timeTracker.getJobById(job_id);
-				if (null == job) {
-					alert("Job with id " + job_id + " cannot be found");
-				}
-				_active_job_start = now;
-				$("#main_active-job").text(job.name);
-			} else {
-				_active_job_start = null;
-				$("#main_active-job").text("No Active Job");
-			}
+            if (null != job_id) {
+                var job = $.timeTracker.getJobById(job_id);
+                if (null == job) {
+                    alert("Job with id " + job_id + " cannot be found");
+                }
+                _active_job_start = now;
+                $("#main_active-job").text(job.name);
+            } else {
+                _active_job_start = null;
+                $("#main_active-job").text("No Active Job");
+            }
 
-			// FIXME need to cause refresh of the header to get size right
+            // FIXME need to cause refresh of the header to get size right
 
-			_active_job_id = job_id;
-			_save();
-			$.timeTracker.refreshJobList();
-		},
+            _active_job_id = job_id;
+            _save();
+            $.timeTracker.refreshJobList();
+        },
 
-		/**
-		 * Get the active job.
-		 * 
-		 * @return the job object or null if no active job
-		 */
-		getActiveJob : function() {
-			if (null == _active_job_id) {
-				return null;
-			} else {
-				return $.timeTracker.getJobById(_active_job_id);
-			}
-		},
+        /**
+         * Get the active job.
+         * 
+         * @return the job object or null if no active job
+         */
+        getActiveJob : function() {
+            if (null == _active_job_id) {
+                return null;
+            } else {
+                return $.timeTracker.getJobById(_active_job_id);
+            }
+        },
 
-		/**
-		 * Update the job list on the main display.
-		 */
-		refreshJobList : function() {
-			// TODO this needs to optionally use the
-			// MRU job list
-			$("#main_joblist").empty();
-			$.each($.timeTracker.getJobsList(), function(index, job) {
-				var element = $("<li><a id='" + job.job_id + "'>" + job.name
-						+ "</a></li>");
-				$(element).click(function() {
-					$.timeTracker.setActiveJob(job.job_id);
-				});
-				$("#main_joblist").append(element);
-			});
-			$("#main_joblist").listview("refresh");
+        /**
+         * Update the job list on the main display.
+         */
+        refreshJobList : function() {
+            // TODO this needs to optionally use the
+            // MRU job list
+            $("#main_joblist").empty();
+            $.each($.timeTracker.getJobsList(), function(index, job) {
+                var element = $("<li><a id='" + job.job_id + "'>" + job.name + "</a></li>");
+                $(element).click(function() {
+                    $.timeTracker.setActiveJob(job.job_id);
+                });
+                $("#main_joblist").append(element);
+            });
+            $("#main_joblist").listview("refresh");
 
-			var active_job = $.timeTracker.getActiveJob();
-			if (null != active_job) {
-				$("#main_active-job").text(active_job.name);
-			}
-		},
+            var active_job = $.timeTracker.getActiveJob();
+            if (null != active_job) {
+                $("#main_active-job").text(active_job.name);
+            }
+        },
 
-		clear : function() {
-			_clear_local_storage();
-		}
+        /**
+         * Build the daily summary page.
+         * 
+         * <pre>
+         * date
+         * project - time - wah
+         * project - time - wah
+         * date
+         * project - time - wah
+         * project - time - wah
+         * </pre>
+         */
+        refreshDailySummary : function() {
+            $("#daily-summary_content").empty();
+            // FIXME this method returns a map where the key is the date and the
+            // value is a list of intervals. If an interval crosses the date
+            // boundary, split into 2 intervals. This method uses the local
+            // timezone to determine if the interval is associated with a given
+            // date.
+            intervals_by_date = $.timeTracker.assignTimeIntervalsToDates();
+            $.each(intervals_by_date, function(date, intervals) {
+                // FIXME format date dow, m/d
+                date_str = $.timeTracker.formatDate(date);
+                var element = $("<li class='date_header'>" + date_str + "</li>");
+                $("#daily-summary_content").append(element);
 
-	};
+                projects = {}; // key=jobid, value=seconds
+                projects_wah = {}; // key=jobid, value=seconds
+                // sum time per project
+                $.each(intervals, function(interval) {
+                    // FIXME make sure this is
+                    // seconds
+                    duration = interval.end.getTime() - interval.start.getTime();
+                    // FIXME make sure that
+                    // getting an empty value
+                    // results in 0 or determine
+                    // how to test
+                    projects[interval.job_id] = projects[interval.job_id] + duration;
+                    if (interval.wah) {
+                        projects_wah[interval.job_id] = projects_wah[interval.job_id] + duration;
+                    }
+                });
 
-	_load();
+                // display projects list
+                $.each(projects, function(job_id, seconds) {
+                    wah_seconds = projects_wah[job_id];
+                    //FIXME need to format seconds as house:minutes
+                    wah_time_str = $.timeTracker.formatSecondsAsTime(wah_seconds);
+                    time_str = $.timeTracker.formatSecondsAsTime(seconds);
+                    var pelement = $("<li class='summary-entry'>" + project_name + " - " + time_str
+                            + " - " + wah_time_str + "</li>");
+                    $("#daily-summary_content").append(pelement);
+                });
+
+            });
+        },
+
+        clear : function() {
+            _clear_local_storage();
+        }
+
+    };
+
+    _load();
 })(window.jQuery || window.$);
 
-$(document)
-		.ready(
-				function() {
-					// Anything in here is only executed when the app starts,
-					// not on
-					// each page
-					// load
+$(document).ready(function() {
+    // Anything in here is only executed when the app starts,
+    // not on
+    // each page
+    // load
 
-					// setup button handlers
-					$("#add-category_add").click(
-							function() {
-								var category_name = $("#add-category_name")
-										.val();
-								if (category_name) {
-									var category = $.timeTracker
-											.addCategory(category_name);
-									return category != null;
-								} else {
-									alert("No name");
-									return false;
-								}
-							});
+    // setup button handlers
+    $("#add-category_add").click(function() {
+        var category_name = $("#add-category_name").val();
+        if (category_name) {
+            var category = $.timeTracker.addCategory(category_name);
+            return category != null;
+        } else {
+            alert("No name");
+            return false;
+        }
+    });
 
-					$("#edit-category_commit")
-							.click(
-									function() {
-										var category_name = $(
-												"#edit-category_name").val();
-										if (!category_name) {
-											alert("No name");
-											return false;
-										}
-										var category_id = $(
-												"#settings_category").val();
-										var category = $.timeTracker
-												.getCategoryById(category_id);
-										if (null == category) {
-											alert("Internal error, no category with id: "
-													+ category_id);
-											return false;
-										}
-										return $.timeTracker.setCategoryName(
-												category, category_name);
-									});
-					$("#edit-category_delete")
-							.click(
-									function() {
-										var category_id = $(
-												"#settings_category").val();
-										var category = $.timeTracker
-												.getCategoryById(category_id);
-										if (confirm("Are you sure you want to delete category '"
-												+ category.name + "'?")) {
-											return $.timeTracker
-													.deleteCategory(category_id);
-										} else {
-											return false;
-										}
-									});
+    $("#edit-category_commit").click(function() {
+        var category_name = $("#edit-category_name").val();
+        if (!category_name) {
+            alert("No name");
+            return false;
+        }
+        var category_id = $("#settings_category").val();
+        var category = $.timeTracker.getCategoryById(category_id);
+        if (null == category) {
+            alert("Internal error, no category with id: " + category_id);
+            return false;
+        }
+        return $.timeTracker.setCategoryName(category, category_name);
+    });
+    $("#edit-category_delete").click(function() {
+        var category_id = $("#settings_category").val();
+        var category = $.timeTracker.getCategoryById(category_id);
+        if (confirm("Are you sure you want to delete category '" + category.name + "'?")) {
+            return $.timeTracker.deleteCategory(category_id);
+        } else {
+            return false;
+        }
+    });
 
-					$("#add-job_add").click(
-							function() {
-								var job_name = $("#add-job_name").val();
-								if (!job_name) {
-									alert("No name");
-									return false;
-								}
+    $("#add-job_add").click(function() {
+        var job_name = $("#add-job_name").val();
+        if (!job_name) {
+            alert("No name");
+            return false;
+        }
 
-								var job_number = $("#add-job_number").val();
+        var job_number = $("#add-job_number").val();
 
-								var category_id = $("#add-job_category").val();
-								if (!category_id) {
-									alert("You must select a category");
-									return false;
-								}
+        var category_id = $("#add-job_category").val();
+        if (!category_id) {
+            alert("You must select a category");
+            return false;
+        }
 
-								var notes = $("#add-job_notes").val();
+        var notes = $("#add-job_notes").val();
 
-								var job = $.timeTracker.addJob(job_name,
-										job_number, category_id, notes);
-								return job != null;
+        var job = $.timeTracker.addJob(job_name, job_number, category_id, notes);
+        return job != null;
 
-							});
-					$('#add-job').live(
-							'pageshow',
-							function(event) {
-								var options = '<option></option>';
-								$.each($.timeTracker.getCategories(), function(
-										index, category) {
-									options += '<option value="'
-											+ category.cat_id + '">'
-											+ category.name + '</option>';
-								});
-								// FIXME select box isn't behaving
-								$("#add-job_category").html(options);
-							});
+    });
+    $('#add-job').live('pageshow', function(event) {
+        var options = '<option></option>';
+        $.each($.timeTracker.getCategories(), function(index, category) {
+            options += '<option value="' + category.cat_id + '">' + category.name + '</option>';
+        });
+        // FIXME select box isn't behaving
+        $("#add-job_category").html(options);
+    });
 
-					$('#settings').live(
-							'pageshow',
-							function(event) {
-								var options = '<option></option>';
-								$.each($.timeTracker.getCategories(), function(
-										index, category) {
-									options += '<option value="'
-											+ category.cat_id + '">'
-											+ category.name + '</option>';
-								});
-								// FIXME select box isn't behaving
-								$("#settings_category").html(options);
-							});
+    $('#settings').live('pageshow', function(event) {
+        var options = '<option></option>';
+        $.each($.timeTracker.getCategories(), function(index, category) {
+            options += '<option value="' + category.cat_id + '">' + category.name + '</option>';
+        });
+        // FIXME select box isn't behaving
+        $("#settings_category").html(options);
+    });
 
-					$("#settings_edit-category")
-							.click(
-									function() {
-										var catid = $("#settings_category")
-												.val();
-										if (!catid) {
-											alert("No category selected!");
-											return false;
-										} else {
-											var category = $.timeTracker
-													.getCategoryById(catid);
-											if (null == category) {
-												alert("Internal error, not category with id: "
-														+ catid);
-												return false;
-											}
-											$("#edit-category_name").val(
-													category.name);
-											return true;
-										}
-									});
-					$("#settings_clear-data")
-							.click(
-									function() {
-										var answer = confirm("Are you sure you want to clear all data?");
-										if (answer) {
-											$.timeTracker.clear();
-											$("#settings_category").html("");
-										}
-									});
+    $("#settings_edit-category").click(function() {
+        var catid = $("#settings_category").val();
+        if (!catid) {
+            alert("No category selected!");
+            return false;
+        } else {
+            var category = $.timeTracker.getCategoryById(catid);
+            if (null == category) {
+                alert("Internal error, not category with id: " + catid);
+                return false;
+            }
+            $("#edit-category_name").val(category.name);
+            return true;
+        }
+    });
+    $("#settings_clear-data").click(function() {
+        var answer = confirm("Are you sure you want to clear all data?");
+        if (answer) {
+            $.timeTracker.clear();
+            $("#settings_category").html("");
+        }
+    });
 
-					$("#main").live('pageshow', function(event) {
-						$.timeTracker.refreshJobList();
-					});
-					$("#main_active-job").click(function() {
-						$.timeTracker.setActiveJob(null);
-					});
-					$("#main_wah").click(function() {
-						$.timeTracker.setWAH($("#main_wah").is(":checked"));
-					});
+    $("#main").live('pageshow', function(event) {
+        $.timeTracker.refreshJobList();
+    });
+    $("#main_active-job").click(function() {
+        $.timeTracker.setActiveJob(null);
+    });
+    $("#main_wah").click(function() {
+        $.timeTracker.setWAH($("#main_wah").is(":checked"));
+    });
+    $("#daily-summary").live('pageshow', function(event) {
+        $.timeTracker.refreshDailySummary();
+    });
 
-				}); // end ready function
+}); // end ready function
